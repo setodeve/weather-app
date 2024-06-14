@@ -1,4 +1,4 @@
-import { Grid, GridItem, Heading, VStack, Link } from "@yamada-ui/react"
+import { Grid, GridItem, Heading, VStack, Link } from '@yamada-ui/react'
 
 const styles = {
   container: {
@@ -6,28 +6,28 @@ const styles = {
     margin: '0 auto',
   },
   city: {
-    margin: '20px 0'
-  }
-};
+    margin: '20px 0',
+  },
+}
 
 interface CityProps {
-  pref: string;
-  cities: string[];
+  pref: string
+  cities: string[]
 }
 
 const City = ({ pref, cities }: CityProps) => {
   return (
     <VStack style={styles.container}>
-      <Heading size="md">{pref}</Heading>
-      <Grid templateColumns="repeat(6, 2fr)" gap="md" style={styles.city}>
+      <Heading size='md'>{pref}</Heading>
+      <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.city}>
         {cities.map((city: string) => (
           <GridItem key={city}>
-            <Link href={"/weather?pref="+pref+"&city="+city}>{city}</Link>
+            <Link href={'/weather?pref=' + pref + '&city=' + city}>{city}</Link>
           </GridItem>
         ))}
       </Grid>
     </VStack>
   )
-};
+}
 
 export default City

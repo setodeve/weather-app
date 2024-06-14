@@ -1,0 +1,11 @@
+.prettierignore
+.prettierrc
+*.mjs
+*.json
+*.yaml
+*.yml
+*.md
+/node_modules/*
+/.next/*
+/public/*
+/styles/*
