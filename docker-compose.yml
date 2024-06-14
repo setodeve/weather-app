@@ -27,12 +27,12 @@ services:
       context: ./frontend/
       dockerfile: Dockerfile
     volumes:
-      - ./frontend/app:/usr/src/app
-    command: 'pnpm dev'
+      - ./frontend:/app
     ports:
       - '8000:3000'
     environment:
       TZ: Asia/Tokyo
+    restart: always
 volumes:
   mysql-db:
     driver: local
