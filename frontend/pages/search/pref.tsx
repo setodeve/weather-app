@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import City from '@/components/City'
 
-const Search: React.FC = () => {
+const Home: React.FC = () => {
   const router = useRouter()
   const [cities, setCities] = useState<string[] | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       const pref = router.query.pref as string
-      const res = await fetch('/pref.json')
+      if (pref === undefined) {
+        return
+      }
+      const res = await fetch('https://geolonia.github.io/japanese-addresses/api/ja.json')
       const result = await res.json()
       setCities(result[pref])
     }
@@ -22,4 +25,4 @@ const Search: React.FC = () => {
 
   return <City pref={router.query.pref as string} cities={cities as string[]} />
 }
-export default Search
+export default Home
