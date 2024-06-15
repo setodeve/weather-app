@@ -22,7 +22,11 @@ const City = ({ pref, cities }: CityProps) => {
       <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.city}>
         {cities.map((city: string) => (
           <GridItem key={city}>
-            <Link href={'/search/city?pref=' + pref + '&city=' + city}>{city}</Link>
+            <Link
+              href={`/search/city?pref=${encodeURIComponent(pref)}&city=${encodeURIComponent(city)}`}
+            >
+              {city}
+            </Link>
           </GridItem>
         ))}
       </Grid>

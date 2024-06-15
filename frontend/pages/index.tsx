@@ -87,7 +87,9 @@ const Home: React.FC = () => {
           return (
             <GridItem key={prefecture}>
               <Heading size='xs' key={prefecture} style={styles.heading}>
-                <Link href={'/search/pref?pref=' + prefecture}>{prefecture}</Link>
+                <Link href={`/search/pref?pref=${encodeURIComponent(prefecture)}`}>
+                  {prefecture}
+                </Link>
               </Heading>
             </GridItem>
           )
