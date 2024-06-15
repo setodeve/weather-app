@@ -96,7 +96,7 @@ const Home: React.FC = () => {
       </thead>
       <tbody>
         {Object.keys(groupedData).map((date) => (
-          <>
+          <React.Fragment key={date}>
             <tr>
               <td colSpan={25} style={{ textAlign: 'center', fontWeight: 'bold' }}>
                 {date}
@@ -120,7 +120,7 @@ const Home: React.FC = () => {
                 <td key={index}>{precip}</td>
               ))}
             </tr>
-          </>
+          </React.Fragment>
         ))}
       </tbody>
     </table>
