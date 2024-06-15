@@ -16,6 +16,9 @@ interface CityProps {
 }
 
 const City = ({ pref, cities }: CityProps) => {
+  if (!pref || !cities) {
+    return null
+  }
   return (
     <VStack style={styles.container}>
       <Heading size='md'>{pref}</Heading>
