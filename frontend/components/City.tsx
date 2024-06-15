@@ -16,13 +16,20 @@ interface CityProps {
 }
 
 const City = ({ pref, cities }: CityProps) => {
+  if (!pref || !cities) {
+    return null
+  }
   return (
     <VStack style={styles.container}>
       <Heading size='md'>{pref}</Heading>
       <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.city}>
         {cities.map((city: string) => (
           <GridItem key={city}>
-            <Link href={'/search/city?pref=' + pref + '&city=' + city}>{city}</Link>
+            <Link
+              href={`/search/city?pref=${encodeURIComponent(pref)}&city=${encodeURIComponent(city)}`}
+            >
+              {city}
+            </Link>
           </GridItem>
         ))}
       </Grid>
