@@ -32,7 +32,7 @@ const Town = ({ pref, city, townes }: TownProps) => {
           ? townes.map((town: Location) =>
               town.koaza === '' ? (
                 <GridItem key={town.town}>
-                  <Link href=''>{town.town}</Link>
+                  <Link href={'/weather?lat='+town.lat+'&lng='+town.lng}>{town.town}</Link>
                 </GridItem>
               ) : null,
             )
