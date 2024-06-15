@@ -21,7 +21,11 @@ const Home: React.FC = () => {
         return
       }
       const res = await fetch(
-        'https://geolonia.github.io/japanese-addresses/api/ja/' + pref + '/' + city + '.json',
+        'https://geolonia.github.io/japanese-addresses/api/ja/' +
+          encodeURIComponent(pref) +
+          '/' +
+          encodeURIComponent(city) +
+          '.json',
       )
       const result = await res.json()
       setTown(result)
