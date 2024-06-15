@@ -27,8 +27,12 @@ const Home: React.FC = () => {
           encodeURIComponent(city) +
           '.json',
       )
-      const result = await res.json()
-      setTown(result)
+      try {
+        const result = await res.json()
+        setTown(result)
+      } catch (error) {
+        console.error('Failed to fetch town data:', error)
+      }
     }
     fetchData()
   }, [router, router.query.pref, router.query.city])
