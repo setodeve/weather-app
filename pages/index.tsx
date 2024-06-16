@@ -1,12 +1,6 @@
 import React from 'react'
 import Region from '@/components/Region'
 import { Grid, GridItem, Heading, Box, Link } from '@yamada-ui/react'
-import { PrismaClient } from '@prisma/client'
-import prisma from '../lib/prisma'
-
-declare global {
-  var prisma: PrismaClient
-}
 
 const styles = {
   container: {
