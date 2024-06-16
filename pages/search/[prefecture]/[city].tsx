@@ -34,6 +34,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         encodeURIComponent(city as string) +
         '.json',
     )
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`)
+    }
     const town = await res.json()
 
     return {

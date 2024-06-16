@@ -22,6 +22,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   try {
     const res = await fetch('https://geolonia.github.io/japanese-addresses/api/ja.json')
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`)
+    }
     const data = await res.json()
     const cities = data[prefecture as string] || []
 

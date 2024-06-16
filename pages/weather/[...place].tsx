@@ -119,6 +119,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const res = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}&hourly=temperature_2m,precipitation_probability,precipitation&timezone=Asia%2FTokyo`,
     )
+    if (!res.ok) {
+      throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`)
+    }
     const weather = await res.json()
 
     return {
