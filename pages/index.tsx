@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, GridItem, Heading, Box, Link } from '@yamada-ui/react'
+import { Grid, GridItem, Heading, VStack, Link } from '@yamada-ui/react'
 
 const styles = {
   container: {
@@ -13,14 +13,8 @@ const styles = {
   heading: {
     margin: '0 auto',
   },
-  box: {
-    padding: '5px',
-    borderRadius: '10px',
-    border: '0.2rem solid',
-    borderColor: '#2563eb',
-  },
-  test: {
-    margin: '0 auto',
+  grid: {
+    margin: '20px 0',
   },
 }
 
@@ -80,12 +74,9 @@ interface Props {
 
 const Home = ({ content }: Props) => {
   return (
-    <Box>
-      {/* <Region/> */}
-      <Heading size='md' style={styles.test}>
-        行き先の都道府県を選択してください
-      </Heading>
-      <Grid templateColumns='repeat(10, 1fr)' gap='md' style={styles.container}>
+    <VStack style={styles.container}>
+      <Heading size='md'>旅先の都道府県を選択してください</Heading>
+      <Grid templateColumns='repeat(10, 1fr)' gap='md' style={styles.grid}>
         {prefectures.map((prefecture) => {
           return (
             <GridItem key={prefecture}>
@@ -96,7 +87,7 @@ const Home = ({ content }: Props) => {
           )
         })}
       </Grid>
-    </Box>
+    </VStack>
   )
 }
 
