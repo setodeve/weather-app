@@ -30,7 +30,6 @@ async function parseHourlyData(lat: number, lng: number) {
   const dateEnd = endOfDay(zonedDate)
 
   try {
-    // @ts-expect-error expected warning
     const data = await prisma.hourlyData.findFirst({
       where: {
         latitude: parseFloat(String(lat)),
@@ -84,6 +83,7 @@ export const createHourlyData = async (lat: number, lng: number) => {
 
     return weather
   } catch (error) {
+    console.error('Error fetching data:', error)
     throw error
   }
 }

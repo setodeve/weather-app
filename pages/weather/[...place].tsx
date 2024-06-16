@@ -119,25 +119,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const place = context.params?.place
   const { lat, lng } = place ? { lat: place[0], lng: place[1] } : { lat: 35.6895, lng: 139.6923 }
 
-  try {
-    const weather = await createHourlyData(lat as number, lng as number)
-    const serializedWeatherData =
-      weather.created_date != undefined
-        ? {
-            ...weather,
-            created_date: weather.created_date?.toISOString(),
-          }
-        : { ...weather }
-    return {
-      props: {
-        weather: serializedWeatherData,
-      },
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return {
-      notFound: true,
-    }
+  const weather = await createHourlyData(lat as number, lng as number)
+  const serializedWeatherData =
+    weather.created_date != undefined
+      ? {
+          ...weather,
+          created_date: weather.created_date?.toISOString(),
+        }
+      : { ...weather }
+  return {
+    props: {
+      weather: serializedWeatherData,
+    },
   }
 }
 
