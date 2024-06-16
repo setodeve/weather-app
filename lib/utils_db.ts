@@ -30,7 +30,7 @@ async function parseHourlyData(lat: number, lng: number) {
   const dateEnd = endOfDay(zonedDate)
 
   try {
-    const data = await prisma.hourlyData.findFirst({
+    const data = await (prisma as any).hourlyData.findFirst({
       where: {
         latitude: parseFloat(String(lat)),
         longitude: parseFloat(String(lng)),
