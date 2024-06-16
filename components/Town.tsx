@@ -10,26 +10,26 @@ const styles = {
   },
 }
 
-interface Location {
+interface LocationData {
   town: string
   koaza: string
   lat: number
   lng: number
 }
 
-interface TownProps {
+interface TownData {
   pref: string
   city: string
-  townes: Location[]
+  townes: LocationData[]
 }
 
-const Town = ({ pref, city, townes }: TownProps) => {
+const Town = ({ pref, city, townes }: TownData) => {
   return (
     <VStack style={styles.container}>
       <Heading size='md'>{pref + ', ' + city}</Heading>
       <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.city}>
         {townes
-          ? townes.map((town: Location) =>
+          ? townes.map((town: LocationData) =>
               town.koaza === '' ? (
                 <GridItem key={town.town}>
                   <Link

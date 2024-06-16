@@ -1,7 +1,8 @@
 import React from 'react'
 import { GetServerSideProps } from 'next'
+import { createHourlyData } from '@/lib/utils_db'
 
-interface HourlyUnits {
+interface HourlyUnitsData {
   time: string
   temperature_2m: string
   precipitation_probability: string
@@ -15,6 +16,13 @@ interface HourlyData {
   precipitation: number[]
 }
 
+interface CurrentData {
+  time: Date
+  interval: number
+  temperature_2m: number
+  wind_speed_10m: number
+}
+
 interface WeatherData {
   latitude: number
   longitude: number
@@ -23,19 +31,21 @@ interface WeatherData {
   timezone: string
   timezone_abbreviation: string
   elevation: number
-  hourly_units: HourlyUnits
+  hourly_units: HourlyUnitsData
   weather: {
     hourly: HourlyData
   }
+  current: CurrentData
 }
 
 interface GroupedData {
   [key: string]: HourlyData
 }
 
-const Home = ({ weather }: WeatherData) => {
+const Home = ({ weather }: any) => {
   const groupedData: GroupedData = {}
-  const { time, temperature_2m, precipitation_probability, precipitation } = weather.hourly
+  const hourlyWeather = weather.hourly || weather
+  const { time, temperature_2m, precipitation_probability, precipitation } = hourlyWeather
   const hours = Array.from({ length: 24 }, (_, i) => i)
   const getDate = (timeString: string) => {
     const date = new Date(timeString)
@@ -109,31 +119,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const place = context.params?.place
   const { lat, lng } = place ? { lat: place[0], lng: place[1] } : { lat: 35.6895, lng: 139.6923 }
 
-  if (!lat || !lng) {
-    return {
-      notFound: true,
-    }
-  }
-
-  try {
-    const res = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}&hourly=temperature_2m,precipitation_probability,precipitation&timezone=Asia%2FTokyo`,
-    )
-    if (!res.ok) {
-      throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`)
-    }
-    const weather = await res.json()
-
-    return {
-      props: {
-        weather,
-      },
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return {
-      notFound: true,
-    }
+  const weather = await createHourlyData(lat as number, lng as number)
+  const serializedWeatherData =
+    weather.created_date != undefined
+      ? {
+          ...weather,
+          created_date: weather.created_date?.toISOString(),
+        }
+      : { ...weather }
+  return {
+    props: {
+      weather: serializedWeatherData,
+    },
   }
 }
 

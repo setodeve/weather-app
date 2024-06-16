@@ -10,12 +10,12 @@ const styles = {
   },
 }
 
-interface CityProps {
+interface CityData {
   pref: string
   cities: string[]
 }
 
-const City = ({ pref, cities }: CityProps) => {
+const City = ({ pref, cities }: CityData) => {
   if (!pref || !cities) {
     return null
   }

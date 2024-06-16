@@ -8,21 +8,20 @@ datasource db {
   directUrl = env("POSTGRES_PRISMA_URL_NON_POOLING")
 }
 
-model Post {
-  id        String     @default(cuid()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
-}
+model HourlyData {
+  id                          String       @default(cuid()) @id
+  latitude                    Float
+  longitude                   Float
+  generationtime_ms           Float
+  utc_offset_seconds          Int
+  timezone                    String
+  timezone_abbreviation       String
+  elevation                   Int
+  time                        String[]
+  temperature_2m              Float[]
+  precipitation_probability   Float[]
+  precipitation               Float[]
+  created_date                DateTime
 
-model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  @@map(name: "users")
+  @@index([created_date])
 }
