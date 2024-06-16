@@ -33,7 +33,7 @@ const Town = ({ pref, city, townes }: TownProps) => {
               town.koaza === '' ? (
                 <GridItem key={town.town}>
                   <Link
-                    href={`/weather?lat=${encodeURIComponent(town.lat)}&lng=${encodeURIComponent(town.lng)}`}
+                    href={`/weather/${encodeURIComponent(town.lat)}/${encodeURIComponent(town.lng)}`}
                   >
                     {town.town}
                   </Link>
