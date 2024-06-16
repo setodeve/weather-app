@@ -44,8 +44,8 @@ interface GroupedData {
 
 const Home = ({ weather }: any) => {
   const groupedData: GroupedData = {}
-  const { time, temperature_2m, precipitation_probability, precipitation } =
-    weather.hourly == undefined ? weather : weather.hourly
+  const hourlyWeather = weather.hourly || weather
+  const { time, temperature_2m, precipitation_probability, precipitation } = hourlyWeather
   const hours = Array.from({ length: 24 }, (_, i) => i)
   const getDate = (timeString: string) => {
     const date = new Date(timeString)
