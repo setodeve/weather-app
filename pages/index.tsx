@@ -1,5 +1,4 @@
 import React from 'react'
-import Region from '@/components/Region'
 import { Grid, GridItem, Heading, Box, Link } from '@yamada-ui/react'
 
 const styles = {
