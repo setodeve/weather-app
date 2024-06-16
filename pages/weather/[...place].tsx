@@ -1,6 +1,5 @@
 import React from 'react'
-import { useEffect, useState, useMemo } from 'react'
-import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
 
 interface HourlyUnits {
   time: string
@@ -25,37 +24,16 @@ interface WeatherData {
   timezone_abbreviation: string
   elevation: number
   hourly_units: HourlyUnits
-  hourly: HourlyData
+  weather: {
+    hourly: HourlyData
+  }
 }
 
 interface GroupedData {
   [key: string]: HourlyData
 }
 
-const Home: React.FC = () => {
-  const router = useRouter()
-  const [weather, setWeather] = useState<{ hourly: HourlyData } | null>(null)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const lat = router.query.lat as string
-      const lng = router.query.lng as string
-      if (lat === undefined || lng === undefined) {
-        return
-      }
-      const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,precipitation_probability,precipitation&timezone=Asia%2FTokyo`,
-      )
-      const result = await res.json()
-      setWeather(result)
-    }
-    fetchData()
-  }, [router, router.query.lat, router.query.lng])
-
-  if (!weather) {
-    return <div>Loading...</div>
-  }
-
+const Home = ({ weather }: WeatherData) => {
   const groupedData: GroupedData = {}
   const { time, temperature_2m, precipitation_probability, precipitation } = weather.hourly
   const hours = Array.from({ length: 24 }, (_, i) => i)
@@ -68,7 +46,7 @@ const Home: React.FC = () => {
       .split(' ')[0]
   }
 
-  time.forEach((timeString, index) => {
+  time.forEach((timeString: string, index: number) => {
     const date = getDate(timeString)
     if (!groupedData[date]) {
       groupedData[date] = {
@@ -125,6 +103,35 @@ const Home: React.FC = () => {
       </tbody>
     </table>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const place = context.params?.place
+  const { lat, lng } = place ? { lat: place[0], lng: place[1] } : { lat: 35.6895, lng: 139.6923 }
+
+  if (!lat || !lng) {
+    return {
+      notFound: true,
+    }
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lng)}&hourly=temperature_2m,precipitation_probability,precipitation&timezone=Asia%2FTokyo`,
+    )
+    const weather = await res.json()
+
+    return {
+      props: {
+        weather,
+      },
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    return {
+      notFound: true,
+    }
+  }
 }
 
 export default Home

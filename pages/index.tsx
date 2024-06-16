@@ -1,6 +1,12 @@
 import React from 'react'
 import Region from '@/components/Region'
 import { Grid, GridItem, Heading, Box, Link } from '@yamada-ui/react'
+import { PrismaClient } from '@prisma/client'
+import prisma from '../lib/prisma'
+
+declare global {
+  var prisma: PrismaClient
+}
 
 const styles = {
   container: {
@@ -75,7 +81,11 @@ const prefectures: string[] = [
   '沖縄県',
 ]
 
-const Home: React.FC = () => {
+interface Props {
+  content: string
+}
+
+const Home = ({ content }: Props) => {
   return (
     <Box>
       {/* <Region/> */}
@@ -87,9 +97,7 @@ const Home: React.FC = () => {
           return (
             <GridItem key={prefecture}>
               <Heading size='xs' key={prefecture} style={styles.heading}>
-                <Link href={`/search/pref?pref=${encodeURIComponent(prefecture)}`}>
-                  {prefecture}
-                </Link>
+                <Link href={`/search/${encodeURIComponent(prefecture)}`}>{prefecture}</Link>
               </Heading>
             </GridItem>
           )
@@ -97,6 +105,15 @@ const Home: React.FC = () => {
       </Grid>
     </Box>
   )
+}
+
+export const getStaticProps = async () => {
+  const content = ''
+  return {
+    props: {
+      content,
+    },
+  }
 }
 
 export default Home
