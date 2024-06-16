@@ -21,5 +21,7 @@ model HourlyData {
   temperature_2m              Float[]
   precipitation_probability   Float[]
   precipitation               Float[]
-  created_date                DateTime @default(now())
+  created_date                DateTime
+
+  @@index([created_date])
 }
