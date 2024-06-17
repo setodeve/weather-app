@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { Grid, GridItem, Heading, VStack, Link } from '@yamada-ui/react'
 
 const styles = {
@@ -22,23 +23,26 @@ interface CityData {
   cities: string[]
 }
 
-const City = ({ pref, cities }: CityData) => {
-  if (!pref || !cities) {
-    return null
-  }
+const City: React.FC<CityData> = ({ pref, cities }) => {
+  const renderedCities = useMemo(
+    () =>
+      cities.map((city) => (
+        <GridItem key={city}>
+          <Heading size='xs' style={styles.heading}>
+            <Link href={`/search/${encodeURIComponent(pref)}/${encodeURIComponent(city)}`}>
+              {city}
+            </Link>
+          </Heading>
+        </GridItem>
+      )),
+    [cities, pref],
+  )
+
   return (
     <VStack style={styles.container}>
       <Heading size='md'>{pref}</Heading>
       <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.grid}>
-        {cities.map((city: string) => (
-          <GridItem key={city}>
-            <Heading size='xs' key={city} style={styles.heading}>
-              <Link href={`/search/${encodeURIComponent(pref)}/${encodeURIComponent(city)}`}>
-                {city}
-              </Link>
-            </Heading>
-          </GridItem>
-        ))}
+        {renderedCities}
       </Grid>
     </VStack>
   )

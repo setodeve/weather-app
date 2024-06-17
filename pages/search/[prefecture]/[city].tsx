@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import Town from '@/components/Town'
 
 interface Location {
@@ -12,8 +13,14 @@ interface TownProps {
   city: string
   town: Location[]
 }
-const Home = ({ prefecture, city, town }: TownProps) => {
-  return <Town pref={prefecture as string} city={city as string} townes={town as Location[]} />
+
+const Home: React.FC<TownProps> = ({ prefecture, city, town }) => {
+  const memoizedTownProps = useMemo(
+    () => ({ pref: prefecture, city: city, townes: town }),
+    [prefecture, city, town],
+  )
+
+  return <Town {...memoizedTownProps} />
 }
 
 export const getServerSideProps: any = async (context: any) => {
@@ -27,22 +34,20 @@ export const getServerSideProps: any = async (context: any) => {
 
   try {
     const res = await fetch(
-      'https://geolonia.github.io/japanese-addresses/api/ja/' +
-        encodeURIComponent(prefecture as string) +
-        '/' +
-        encodeURIComponent(city as string) +
-        '.json',
+      `https://geolonia.github.io/japanese-addresses/api/ja/${encodeURIComponent(prefecture)}/${encodeURIComponent(city)}.json`,
     )
+
     if (!res.ok) {
       throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`)
     }
-    const town = await res.json()
+
+    const town: Location[] = await res.json()
 
     return {
       props: {
         town,
         city,
-        prefecture: prefecture as string,
+        prefecture,
       },
     }
   } catch (error) {
