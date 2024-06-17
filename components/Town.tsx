@@ -32,18 +32,22 @@ interface TownData {
 const Town: React.FC<TownData> = ({ pref, city, townes }) => {
   const renderedTownes = useMemo(
     () =>
-      townes.map((town) =>
-        town.koaza === '' ? (
-          <GridItem key={town.town}>
-            <Heading size='xs' style={styles.heading}>
-              <Link
-                href={`/weather/${encodeURIComponent(town.lat)}/${encodeURIComponent(town.lng)}`}
-              >
-                {town.town}
-              </Link>
-            </Heading>
-          </GridItem>
-        ) : null,
+      townes.length > 0 ? (
+        townes.map((town) =>
+          town.koaza === '' ? (
+            <GridItem key={town.town}>
+              <Heading size='xs' style={styles.heading}>
+                <Link
+                  href={`/weather/${encodeURIComponent(town.lat)}/${encodeURIComponent(town.lng)}`}
+                >
+                  {town.town}
+                </Link>
+              </Heading>
+            </GridItem>
+          ) : null,
+        )
+      ) : (
+        <p>No towns available</p>
       ),
     [townes],
   )
