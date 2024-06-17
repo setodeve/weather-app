@@ -7,7 +7,7 @@ const styles = {
     padding: '30px',
     borderRadius: '10px',
     border: '0.2rem solid',
-    borderColor: '#2563eb',
+    borderColor: '#6592f1',
   },
   grid: {
     margin: '20px 0',

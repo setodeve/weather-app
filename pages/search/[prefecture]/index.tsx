@@ -1,5 +1,4 @@
 import React from 'react'
-import { GetServerSideProps } from 'next'
 import City from '@/components/City'
 
 interface Pref {
@@ -11,7 +10,7 @@ const Home = ({ cities, prefecture }: Pref) => {
   return <City pref={prefecture} cities={cities} />
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: any = async (context: any) => {
   const { prefecture } = context.params || {}
 
   if (!prefecture) {
