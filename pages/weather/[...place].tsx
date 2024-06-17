@@ -1,22 +1,14 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { createHourlyData } from '@/lib/utils_db'
-import { VStack, Heading } from '@yamada-ui/react'
+import { VStack, Heading, Button } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
 import WeatherMap from '@/components/WeatherMap'
-
+import { useRouter } from 'next/router'
 interface HourlyData {
   time: string[]
   temperature_2m: number[]
   precipitation_probability: number[]
 }
-
-// interface WeatherData {
-//   latitude: number
-//   longitude: number
-//   weather: {
-//     hourly: HourlyData
-//   }
-// }
 
 interface ChartData {
   [key: string]: {
@@ -35,12 +27,8 @@ const styles = {
     margin: '20px auto',
     padding: '30px',
     borderRadius: '10px',
-    border: '0.2rem solid',
-    borderColor: '#6592f1',
+    border: '0.2rem solid #6592f1',
     overflowX: 'auto' as 'auto',
-  },
-  heading: {
-    margin: '0 auto',
   },
   table: {
     width: '100%',
@@ -49,89 +37,92 @@ const styles = {
     textAlign: 'center',
     overflowX: 'auto' as 'auto',
   },
-  thTd: {
-    padding: '2px',
-    border: '1px solid #ddd',
+  thTd: { fontSize: '13px' },
+  thTdTitle: {
+    paddingTop: '2px',
+    fontSize: '13px',
   },
   th: {
     backgroundColor: '#6592f1',
     color: 'white',
     position: 'sticky',
-    padding: '12px',
+    padding: '5px',
+    textAlign: 'center',
+    // borderBottom: '1rem solid #ddd',
+  },
+  tr: {
+    borderBottom: '0.2rem solid white',
+  },
+  dataTmpTb: {
+    borderBottom: '0.1rem solid #ddd',
+    borderRight: '0.1rem  solid #ddd',
+    borderLeft: '0.1rem solid #ddd',
+  },
+  dataRainTb: {
+    borderRight: '0.1rem  solid #ddd',
+    borderLeft: '0.1rem solid #ddd',
   },
   dateRow: {
     backgroundColor: '#6592f1',
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'left',
-    padding: '12px',
+    padding: '5px',
+    fontSize: '15px',
+  },
+  center: {
+    margin: '0 auto',
   },
 }
 
 const Home = ({ weather }: any) => {
   const hourlyWeather = weather.hourly || weather
   const { time, temperature_2m, precipitation_probability } = hourlyWeather
+  const router = useRouter()
   const getDate = (timeString: string) => {
     const date = toZonedTime(new Date(timeString), 'Asia/Tokyo')
-    return date
-      .toLocaleString('ja-JP', {
-        timeZone: 'Asia/Tokyo',
-      })
-      .split(' ')[0]
+    return date.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }).split(' ')[0]
+  }
+  const goHome = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    router.push('/')
   }
   const lat = Number(weather.latitude)
   const log = Number(weather.longitude)
-  const chartGroup: ChartData = {}
 
-  let times = 0
+  const groupedData: WeatherMap = useMemo(() => {
+    const group: WeatherMap = {}
 
-  time.forEach((timeString: string, index: number) => {
-    const date = getDate(timeString)
-    if (!chartGroup[date]) {
-      chartGroup[date] = {
-        temp: [],
-        rain: [],
+    time.forEach((timeString: string, index: number) => {
+      const date = getDate(timeString)
+      if (!group[date]) {
+        group[date] = {
+          time: [],
+          temperature_2m: [],
+          precipitation_probability: [],
+        }
       }
-    }
-
-    chartGroup[date].temp.push({
-      name: String(times) as string,
-      気温: temperature_2m[index] as number,
-    })
-    chartGroup[date].rain.push({
-      name: String(times) as string,
-      降水確率: precipitation_probability[index] as number,
+      group[date].time.push(timeString)
+      group[date].temperature_2m.push(temperature_2m[index])
+      group[date].precipitation_probability.push(precipitation_probability[index])
     })
 
-    times += 1
-    if (times === 24) {
-      times = 0
-    }
-  })
-  const groupedData: WeatherMap = {}
-  time.forEach((timeString: string, index: number) => {
-    const date = getDate(timeString)
-    if (!groupedData[date]) {
-      groupedData[date] = {
-        time: [],
-        temperature_2m: [],
-        precipitation_probability: [],
-      }
-    }
-    groupedData[date].time.push(timeString)
-    groupedData[date].temperature_2m.push(temperature_2m[index])
-    groupedData[date].precipitation_probability.push(precipitation_probability[index])
-  })
+    return group
+  }, [time, temperature_2m, precipitation_probability])
 
-  const hours = Array.from({ length: 24 }, (_, i) => i)
+  const hours = useMemo(() => Array.from({ length: 24 }, (_, i) => i), [])
 
   return (
     <VStack style={styles.container}>
+      <Button colorScheme='blue' onClick={goHome} width='20%' style={styles.center}>
+        ホームに戻る
+      </Button>
+
       <Heading size='md'>1週間分の天気</Heading>
       <table style={styles.table as any}>
         <thead>
-          <tr>
-            <th style={{ ...styles.thTd, ...(styles.th as any) }}></th>
+          <tr style={styles.tr}>
+            <th style={{ ...styles.thTd }}></th>
             {hours.map((time) => (
               <th key={time} style={{ ...styles.thTd, ...(styles.th as any) }}>
                 {time}
@@ -148,17 +139,17 @@ const Home = ({ weather }: any) => {
                 </td>
               </tr>
               <tr>
-                <td style={styles.thTd}>気温 (°C)</td>
+                <td style={{ ...styles.thTdTitle, ...styles.dataTmpTb }}>気温 (°C)</td>
                 {groupedData[date].temperature_2m.map((temp, index) => (
-                  <td key={index} style={styles.thTd}>
+                  <td key={index} style={{ ...styles.thTd, ...styles.dataTmpTb }}>
                     {temp}
                   </td>
                 ))}
               </tr>
               <tr>
-                <td style={styles.thTd}>降雨率 (%)</td>
+                <td style={{ ...styles.thTdTitle, ...styles.dataRainTb }}>降雨率 (%)</td>
                 {groupedData[date].precipitation_probability.map((prob, index) => (
-                  <td key={index} style={styles.thTd}>
+                  <td key={index} style={{ ...styles.thTd, ...styles.dataRainTb }}>
                     {prob}
                   </td>
                 ))}
@@ -177,13 +168,10 @@ export const getServerSideProps: any = async (context: any) => {
   const { lat, lng } = place ? { lat: place[0], lng: place[1] } : { lat: 35.6895, lng: 139.6923 }
 
   const weather = await createHourlyData(lat as number, lng as number)
-  const serializedWeatherData =
-    weather.created_date != undefined
-      ? {
-          ...weather,
-          created_date: weather.created_date?.toISOString(),
-        }
-      : { ...weather }
+  const serializedWeatherData = weather.created_date
+    ? { ...weather, created_date: weather.created_date?.toISOString() }
+    : { ...weather }
+
   return {
     props: {
       weather: serializedWeatherData,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import City from '@/components/City'
 
 interface Pref {
@@ -6,8 +6,10 @@ interface Pref {
   prefecture: string
 }
 
-const Home = ({ cities, prefecture }: Pref) => {
-  return <City pref={prefecture} cities={cities} />
+const Home: React.FC<Pref> = ({ cities, prefecture }) => {
+  const memoizedProps = useMemo(() => ({ pref: prefecture, cities }), [prefecture, cities])
+
+  return <City {...memoizedProps} />
 }
 
 export const getServerSideProps: any = async (context: any) => {
@@ -25,12 +27,12 @@ export const getServerSideProps: any = async (context: any) => {
       throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`)
     }
     const data = await res.json()
-    const cities = data[prefecture as string] || []
+    const cities = data[prefecture] || []
 
     return {
       props: {
         cities,
-        prefecture: prefecture as string,
+        prefecture,
       },
     }
   } catch (error) {

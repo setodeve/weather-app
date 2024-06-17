@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import { Grid, GridItem, Heading, VStack, Link } from '@yamada-ui/react'
 
 const styles = {
@@ -28,26 +29,34 @@ interface TownData {
   townes: LocationData[]
 }
 
-const Town = ({ pref, city, townes }: TownData) => {
+const Town: React.FC<TownData> = ({ pref, city, townes }) => {
+  const renderedTownes = useMemo(
+    () =>
+      townes.length > 0 ? (
+        townes.map((town) =>
+          town.koaza === '' ? (
+            <GridItem key={town.town}>
+              <Heading size='xs' style={styles.heading}>
+                <Link
+                  href={`/weather/${encodeURIComponent(town.lat)}/${encodeURIComponent(town.lng)}`}
+                >
+                  {town.town}
+                </Link>
+              </Heading>
+            </GridItem>
+          ) : null,
+        )
+      ) : (
+        <p>No towns available</p>
+      ),
+    [townes],
+  )
+
   return (
     <VStack style={styles.container}>
-      <Heading size='sm'>{pref + ' / ' + city}</Heading>
+      <Heading size='sm'>{`${pref} / ${city}`}</Heading>
       <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.grid}>
-        {townes
-          ? townes.map((town: LocationData) =>
-              town.koaza === '' ? (
-                <GridItem key={town.town}>
-                  <Heading size='xs' key={city} style={styles.heading}>
-                    <Link
-                      href={`/weather/${encodeURIComponent(town.lat)}/${encodeURIComponent(town.lng)}`}
-                    >
-                      {town.town}
-                    </Link>
-                  </Heading>
-                </GridItem>
-              ) : null,
-            )
-          : null}
+        {renderedTownes}
       </Grid>
     </VStack>
   )

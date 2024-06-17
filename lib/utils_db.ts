@@ -4,27 +4,32 @@ import { toZonedTime } from 'date-fns-tz'
 
 const prisma = new PrismaClient()
 
-// interface HourlyData {
-//   latitude: number
-//   longitude: number
-//   times: string[]
-//   temperatures_2m: number[]
-//   precipitation_probabilities: number[]
-//   created_date: Date
-// }
+interface HourlyData {
+  latitude: number
+  longitude: number
+  time: string[]
+  temperature_2m: number[]
+  precipitation_probability: number[]
+  created_date: Date
+}
 
-// interface PlaceData {
-//   lat: number
-//   lng: number
-// }
+interface PlaceData {
+  lat: number
+  lng: number
+}
 
-const parseHourlyData = async (lat: number, lng: number) => {
-  const zonedDate = toZonedTime(new Date(), 'Asia/Tokyo')
+const getZonedTimeRange = (date: Date, timezone: string) => {
+  const zonedDate = toZonedTime(date, timezone)
   const dateStart = startOfDay(zonedDate)
   const dateEnd = endOfDay(zonedDate)
+  return { dateStart, dateEnd }
+}
+
+const parseHourlyData = async (lat: number, lng: number): Promise<HourlyData | null> => {
+  const { dateStart, dateEnd } = getZonedTimeRange(new Date(), 'Asia/Tokyo')
 
   try {
-    const data = await (prisma as any).hourlyData.findFirst({
+    const data = await prisma.hourlyData.findFirst({
       where: {
         latitude: parseFloat(String(lat)),
         longitude: parseFloat(String(lng)),
@@ -43,12 +48,13 @@ const parseHourlyData = async (lat: number, lng: number) => {
 }
 
 export const deletePreviousDayData = async () => {
-  const zonedDate = toZonedTime(new Date(), 'Asia/Tokyo')
-  const previousDayStart = startOfDay(subDays(zonedDate, 1))
-  const previousDayEnd = endOfDay(subDays(zonedDate, 1))
+  const { dateStart: previousDayStart, dateEnd: previousDayEnd } = getZonedTimeRange(
+    subDays(new Date(), 1),
+    'Asia/Tokyo',
+  )
 
   try {
-    await (prisma as any).hourlyData.deleteMany({
+    await prisma.hourlyData.deleteMany({
       where: {
         created_date: {
           gte: previousDayStart,
@@ -62,7 +68,7 @@ export const deletePreviousDayData = async () => {
   }
 }
 
-export const createHourlyData = async (lat: number, lng: number) => {
+export const createHourlyData = async (lat: number, lng: number): Promise<HourlyData> => {
   try {
     const existingData = await parseHourlyData(lat, lng)
 
@@ -78,20 +84,22 @@ export const createHourlyData = async (lat: number, lng: number) => {
     }
     const weather = await res.json()
 
-    await (prisma as any).hourlyData.create({
-      data: {
-        latitude: parseFloat(String(lat)),
-        longitude: parseFloat(String(lng)),
-        time: weather.hourly.time,
-        temperature_2m: weather.hourly.temperature_2m,
-        precipitation_probability: weather.hourly.precipitation_probability,
-        created_date: toZonedTime(new Date(), 'Asia/Tokyo'),
-      },
+    const newData: HourlyData = {
+      latitude: parseFloat(String(lat)),
+      longitude: parseFloat(String(lng)),
+      time: weather.hourly.time,
+      temperature_2m: weather.hourly.temperature_2m,
+      precipitation_probability: weather.hourly.precipitation_probability,
+      created_date: toZonedTime(new Date(), 'Asia/Tokyo'),
+    }
+
+    await prisma.hourlyData.create({
+      data: newData as any,
     })
 
-    return weather
+    return newData
   } catch (error) {
-    console.error('Error fetching data:', error)
+    console.error('Error creating hourly data:', error)
     throw error
   }
 }
