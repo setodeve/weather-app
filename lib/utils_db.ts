@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { startOfDay, endOfDay } from 'date-fns'
+import { startOfDay, endOfDay, subDays } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 
 const prisma = new PrismaClient()
@@ -24,7 +24,7 @@ interface PlaceData {
   lng: number
 }
 
-async function parseHourlyData(lat: number, lng: number) {
+const parseHourlyData = async (lat: number, lng: number) => {
   const zonedDate = toZonedTime(new Date(), 'Asia/Tokyo')
   const dateStart = startOfDay(zonedDate)
   const dateEnd = endOfDay(zonedDate)
@@ -44,6 +44,26 @@ async function parseHourlyData(lat: number, lng: number) {
     return data
   } catch (error) {
     console.error('Error fetching data:', error)
+    throw error
+  }
+}
+
+export const deletePreviousDayData = async () => {
+  const zonedDate = toZonedTime(new Date(), 'Asia/Tokyo')
+  const previousDayStart = startOfDay(subDays(zonedDate, 1))
+  const previousDayEnd = endOfDay(subDays(zonedDate, 1))
+
+  try {
+    await (prisma as any).hourlyData.deleteMany({
+      where: {
+        created_date: {
+          gte: previousDayStart,
+          lt: previousDayEnd,
+        },
+      },
+    })
+  } catch (error) {
+    console.error('Error deleting previous day data:', error)
     throw error
   }
 }
