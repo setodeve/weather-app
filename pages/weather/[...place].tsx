@@ -2,7 +2,7 @@ import React from 'react'
 import { createHourlyData } from '@/lib/utils_db'
 import { VStack, Heading } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
-import GoogleMap from '@/components/GoogleMap'
+import WeatherMap from '@/components/WeatherMap'
 
 interface HourlyData {
   time: string[]
@@ -25,7 +25,7 @@ interface ChartData {
   }
 }
 
-interface GroupedData {
+interface WeatherMap {
   [key: string]: HourlyData
 }
 
@@ -108,7 +108,7 @@ const Home = ({ weather }: any) => {
       times = 0
     }
   })
-  const groupedData: GroupedData = {}
+  const groupedData: WeatherMap = {}
   time.forEach((timeString: string, index: number) => {
     const date = getDate(timeString)
     if (!groupedData[date]) {
@@ -167,7 +167,7 @@ const Home = ({ weather }: any) => {
           ))}
         </tbody>
       </table>
-      <GoogleMap lat={lat} lng={log} />
+      <WeatherMap lat={lat} lng={log} />
     </VStack>
   )
 }

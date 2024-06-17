@@ -16,7 +16,7 @@ import React from 'react'
 //   event: Event
 // }
 
-export default function Map({ lat, lng }: { lat: number; lng: number }) {
+export default function WeatherMap({ lat, lng }: { lat: number; lng: number }) {
   const defaultLatLng = {
     lat: lat,
     lng: lng,
