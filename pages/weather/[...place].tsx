@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { GetServerSideProps } from 'next'
 import { createHourlyData } from '@/lib/utils_db'
 import { VStack, HStack, Heading } from '@yamada-ui/react'
@@ -97,11 +97,11 @@ const Home = ({ weather }: any) => {
     }
 
     chartGroup[date].temp.push({
-      name: `${times}時`,
+      name: String(times) as string,
       気温: temperature_2m[index] as number,
     })
     chartGroup[date].rain.push({
-      name: `${times}時`,
+      name: String(times) as string,
       降水確率: precipitation_probability[index] as number,
     })
 
@@ -110,30 +110,41 @@ const Home = ({ weather }: any) => {
       times = 0
     }
   })
-  const chartsData = useMemo(() => chartGroup, [])
+  useEffect(() => {
+    const originalConsoleError = console.error
+
+    console.error = (...args: any[]) => {
+      if (typeof args[0] === 'string' && /defaultProps/.test(args[0])) {
+        return
+      }
+      originalConsoleError(...args)
+    }
+
+    return () => {
+      console.error = originalConsoleError
+    }
+  }, [])
   return (
     <VStack style={styles.container}>
       <Heading size='md'>1週間分の天気</Heading>
-      {Object.keys(chartsData).map((date) => (
+      {Object.keys(chartGroup).map((date) => (
         <VStack key={date}>
           <Heading size='sm'>{date}</Heading>
           <HStack style={styles.scroll} key={date}>
             <VStack>
-              <Heading size='xs'>気温</Heading>
+              <Heading size='xs'>気温(℃ / 時)</Heading>
               <LineChart
                 size='sm'
-                unit='℃'
-                data={chartsData[date].temp as any}
+                data={chartGroup[date].temp as any}
                 series={stands}
                 dataKey='name'
               />
             </VStack>
             <VStack>
-              <Heading size='xs'>降水確率</Heading>
+              <Heading size='xs'>降水確率(% / 時)</Heading>
               <LineChart
                 size='sm'
-                unit='%'
-                data={chartsData[date].rain as any}
+                data={chartGroup[date].rain as any}
                 series={rains}
                 dataKey='name'
               />
