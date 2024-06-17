@@ -12,15 +12,9 @@ model HourlyData {
   id                          String       @default(cuid()) @id
   latitude                    Float
   longitude                   Float
-  generationtime_ms           Float
-  utc_offset_seconds          Int
-  timezone                    String
-  timezone_abbreviation       String
-  elevation                   Int
   time                        String[]
   temperature_2m              Float[]
   precipitation_probability   Float[]
-  precipitation               Float[]
   created_date                DateTime
 
   @@index([created_date])
