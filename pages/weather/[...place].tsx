@@ -79,7 +79,8 @@ const Home = ({ weather }: any) => {
       })
       .split(' ')[0]
   }
-
+  const lat = Number(weather.latitude)
+  const log = Number(weather.longitude)
   const chartGroup: ChartData = {}
 
   const stands: any = useMemo(() => [{ dataKey: '気温', color: 'orange.500' }], [])
@@ -140,7 +141,7 @@ const Home = ({ weather }: any) => {
           </HStack>
         </VStack>
       ))}
-      <Maps lat={weather.latitude} lng={weather.longitude} />
+      <Maps lat={lat} lng={log} />
     </VStack>
   )
 }
