@@ -118,7 +118,7 @@ const Home = ({ weather }: any) => {
         ホームに戻る
       </Button>
 
-      <Heading size='lg'>1週間分の天気</Heading>
+      <Heading size='md'>1週間分の天気</Heading>
       <table style={styles.table as any}>
         <thead>
           <tr style={styles.tr}>
