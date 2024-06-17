@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { GetServerSideProps } from 'next'
 import { createHourlyData } from '@/lib/utils_db'
+import { VStack, HStack, Heading } from '@yamada-ui/react'
+import { LineChart } from '@yamada-ui/charts'
+import { toZonedTime } from 'date-fns-tz'
+import Maps from '@/components/GoogleMap'
 
 interface HourlyUnitsData {
   time: string
@@ -13,7 +17,6 @@ interface HourlyData {
   time: string[]
   temperature_2m: number[]
   precipitation_probability: number[]
-  precipitation: number[]
 }
 
 interface CurrentData {
@@ -38,80 +41,108 @@ interface WeatherData {
   current: CurrentData
 }
 
-interface GroupedData {
-  [key: string]: HourlyData
+interface ChartData {
+  [key: string]: {
+    temp: { name: string; 気温: number }[]
+    rain: { name: string; 降水確率: number }[]
+  }
+}
+
+const styles = {
+  container: {
+    width: '90%',
+    margin: '50px auto',
+    padding: '50px',
+    borderRadius: '10px',
+    border: '0.2rem solid',
+    borderColor: '#2563eb',
+  },
+  heading: {
+    margin: '0 auto',
+  },
+  grid: {
+    margin: '20px 0',
+  },
+  scroll: {
+    overflowX: 'auto' as 'auto',
+  },
 }
 
 const Home = ({ weather }: any) => {
-  const groupedData: GroupedData = {}
   const hourlyWeather = weather.hourly || weather
-  const { time, temperature_2m, precipitation_probability, precipitation } = hourlyWeather
-  const hours = Array.from({ length: 24 }, (_, i) => i)
+  const { time, temperature_2m, precipitation_probability } = hourlyWeather
   const getDate = (timeString: string) => {
-    const date = new Date(timeString)
+    const date = toZonedTime(new Date(timeString), 'Asia/Tokyo')
     return date
       .toLocaleString('ja-JP', {
         timeZone: 'Asia/Tokyo',
       })
       .split(' ')[0]
   }
+  const lat = Number(weather.latitude)
+  const log = Number(weather.longitude)
+  const chartGroup: ChartData = {}
+
+  const stands: any = useMemo(() => [{ dataKey: '気温', color: 'orange.500' }], [])
+  const rains: any = useMemo(() => [{ dataKey: '降水確率', color: 'blue.500' }], [])
+  let times = 0
 
   time.forEach((timeString: string, index: number) => {
     const date = getDate(timeString)
-    if (!groupedData[date]) {
-      groupedData[date] = {
-        time: [],
-        temperature_2m: [],
-        precipitation_probability: [],
-        precipitation: [],
+    if (!chartGroup[date]) {
+      chartGroup[date] = {
+        temp: [],
+        rain: [],
       }
     }
-    groupedData[date].time.push(timeString)
-    groupedData[date].temperature_2m.push(temperature_2m[index])
-    groupedData[date].precipitation_probability.push(precipitation_probability[index])
-    groupedData[date].precipitation.push(precipitation[index])
-  })
 
+    chartGroup[date].temp.push({
+      name: `${times}時`,
+      気温: temperature_2m[index] as number,
+    })
+    chartGroup[date].rain.push({
+      name: `${times}時`,
+      降水確率: precipitation_probability[index] as number,
+    })
+
+    times += 1
+    if (times === 24) {
+      times = 0
+    }
+  })
+  const chartsData = useMemo(() => chartGroup, [])
   return (
-    <table border={1}>
-      <thead>
-        <tr>
-          <th>パラメーター</th>
-          {hours.map((time) => (
-            <th key={time}>{time}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {Object.keys(groupedData).map((date) => (
-          <React.Fragment key={date}>
-            <tr>
-              <td colSpan={25} style={{ textAlign: 'center', fontWeight: 'bold' }}>
-                {date}
-              </td>
-            </tr>
-            <tr>
-              <td>気温 (°C)</td>
-              {groupedData[date].temperature_2m.map((temp, index) => (
-                <td key={index}>{temp}</td>
-              ))}
-            </tr>
-            <tr>
-              <td>降雨率 (%)</td>
-              {groupedData[date].precipitation_probability.map((prob, index) => (
-                <td key={index}>{prob}</td>
-              ))}
-            </tr>
-            <tr>
-              <td>降雨量 (mm)</td>
-              {groupedData[date].precipitation.map((precip, index) => (
-                <td key={index}>{precip}</td>
-              ))}
-            </tr>
-          </React.Fragment>
-        ))}
-      </tbody>
-    </table>
+    <VStack style={styles.container}>
+      <Heading size='md'>1週間分の天気</Heading>
+      {Object.keys(chartsData).map((date) => (
+        <VStack key={date}>
+          <Heading size='sm'>{date}</Heading>
+          <HStack style={styles.scroll} key={date}>
+            <VStack>
+              <Heading size='xs'>気温</Heading>
+              <LineChart
+                size='sm'
+                unit='℃'
+                data={chartsData[date].temp as any}
+                series={stands}
+                dataKey='name'
+              />
+            </VStack>
+            <VStack>
+              <Heading size='xs'>降水確率</Heading>
+              <LineChart
+                size='sm'
+                unit='%'
+                data={chartsData[date].rain as any}
+                series={rains}
+                dataKey='name'
+              />
+            </VStack>
+          </HStack>
+        </VStack>
+      ))}
+      <Maps lat={lat} lng={log} />
+    </VStack>
   )
 }
 

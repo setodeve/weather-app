@@ -3,11 +3,16 @@ import { Grid, GridItem, Heading, VStack, Link } from '@yamada-ui/react'
 const styles = {
   container: {
     width: '70%',
-    margin: '0 auto',
+    margin: '50px auto',
+    padding: '30px',
+    borderRadius: '10px',
+    border: '0.2rem solid',
+    borderColor: '#2563eb',
   },
-  city: {
+  grid: {
     margin: '20px 0',
   },
+  heading: { margin: '0 auto' },
 }
 
 interface LocationData {
@@ -26,17 +31,19 @@ interface TownData {
 const Town = ({ pref, city, townes }: TownData) => {
   return (
     <VStack style={styles.container}>
-      <Heading size='md'>{pref + ', ' + city}</Heading>
-      <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.city}>
+      <Heading size='sm'>{pref + ' / ' + city}</Heading>
+      <Grid templateColumns='repeat(6, 2fr)' gap='md' style={styles.grid}>
         {townes
           ? townes.map((town: LocationData) =>
               town.koaza === '' ? (
                 <GridItem key={town.town}>
-                  <Link
-                    href={`/weather/${encodeURIComponent(town.lat)}/${encodeURIComponent(town.lng)}`}
-                  >
-                    {town.town}
-                  </Link>
+                  <Heading size='xs' key={city} style={styles.heading}>
+                    <Link
+                      href={`/weather/${encodeURIComponent(town.lat)}/${encodeURIComponent(town.lng)}`}
+                    >
+                      {town.town}
+                    </Link>
+                  </Heading>
                 </GridItem>
               ) : null,
             )
