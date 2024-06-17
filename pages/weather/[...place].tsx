@@ -2,14 +2,7 @@ import React from 'react'
 import { createHourlyData } from '@/lib/utils_db'
 import { VStack, Heading } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
-import GoogleMap from '@/components/GoogleMap'
-
-interface HourlyUnitsData {
-  time: string
-  temperature_2m: string
-  precipitation_probability: string
-  precipitation: string
-}
+import WeatherMap from '@/components/WeatherMap'
 
 interface HourlyData {
   time: string[]
@@ -17,27 +10,13 @@ interface HourlyData {
   precipitation_probability: number[]
 }
 
-interface CurrentData {
-  time: Date
-  interval: number
-  temperature_2m: number
-  wind_speed_10m: number
-}
-
-interface WeatherData {
-  latitude: number
-  longitude: number
-  generationtime_ms: number
-  utc_offset_seconds: number
-  timezone: string
-  timezone_abbreviation: string
-  elevation: number
-  hourly_units: HourlyUnitsData
-  weather: {
-    hourly: HourlyData
-  }
-  current: CurrentData
-}
+// interface WeatherData {
+//   latitude: number
+//   longitude: number
+//   weather: {
+//     hourly: HourlyData
+//   }
+// }
 
 interface ChartData {
   [key: string]: {
@@ -46,7 +25,7 @@ interface ChartData {
   }
 }
 
-interface GroupedData {
+interface WeatherMap {
   [key: string]: HourlyData
 }
 
@@ -129,7 +108,7 @@ const Home = ({ weather }: any) => {
       times = 0
     }
   })
-  const groupedData: GroupedData = {}
+  const groupedData: WeatherMap = {}
   time.forEach((timeString: string, index: number) => {
     const date = getDate(timeString)
     if (!groupedData[date]) {
@@ -188,7 +167,7 @@ const Home = ({ weather }: any) => {
           ))}
         </tbody>
       </table>
-      <GoogleMap lat={lat} lng={log} />
+      <WeatherMap lat={lat} lng={log} />
     </VStack>
   )
 }

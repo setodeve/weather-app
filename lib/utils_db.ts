@@ -4,25 +4,19 @@ import { toZonedTime } from 'date-fns-tz'
 
 const prisma = new PrismaClient()
 
-interface HourlyData {
-  latitude: number
-  longitude: number
-  generationtime_ms: number
-  utc_offset_seconds: number
-  timezone: string
-  timezone_abbreviation: string
-  elevation: number
-  times: string[]
-  temperatures_2m: number[]
-  precipitation_probabilities: number[]
-  precipitations: number[]
-  created_date: Date
-}
+// interface HourlyData {
+//   latitude: number
+//   longitude: number
+//   times: string[]
+//   temperatures_2m: number[]
+//   precipitation_probabilities: number[]
+//   created_date: Date
+// }
 
-interface PlaceData {
-  lat: number
-  lng: number
-}
+// interface PlaceData {
+//   lat: number
+//   lng: number
+// }
 
 const parseHourlyData = async (lat: number, lng: number) => {
   const zonedDate = toZonedTime(new Date(), 'Asia/Tokyo')
@@ -88,15 +82,9 @@ export const createHourlyData = async (lat: number, lng: number) => {
       data: {
         latitude: parseFloat(String(lat)),
         longitude: parseFloat(String(lng)),
-        generationtime_ms: weather.generationtime_ms,
-        utc_offset_seconds: weather.utc_offset_seconds,
-        timezone: weather.timezone,
-        timezone_abbreviation: weather.timezone_abbreviation,
-        elevation: weather.elevation,
         time: weather.hourly.time,
         temperature_2m: weather.hourly.temperature_2m,
         precipitation_probability: weather.hourly.precipitation_probability,
-        precipitation: weather.hourly.precipitation,
         created_date: toZonedTime(new Date(), 'Asia/Tokyo'),
       },
     })

@@ -8,24 +8,24 @@ import React from 'react'
 //     libraries: ["places"]
 // });
 
-interface LatLngEvent {
-  x: number
-  y: number
-  lat: number
-  lng: number
-  event: Event
-}
+// interface LatLngEvent {
+//   x: number
+//   y: number
+//   lat: number
+//   lng: number
+//   event: Event
+// }
 
-export default function Map({ lat, lng }: { lat: number; lng: number }) {
+export default function WeatherMap({ lat, lng }: { lat: number; lng: number }) {
   const defaultLatLng = {
     lat: lat,
     lng: lng,
   }
 
-  const setLatLng = ({ x, y, lat, lng, event }: LatLngEvent): void => {
-    console.log(lat)
-    console.log(lng)
-  }
+  // const setLatLng = ({ x, y, lat, lng, event }: LatLngEvent): void => {
+  //   console.log(lat)
+  //   console.log(lng)
+  // }
 
   const renderMarkers = (map: any, maps: any) => {
     // loader.load().then((google)=>{
