@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react'
-import { GetServerSideProps } from 'next'
+import React from 'react'
 import { createHourlyData } from '@/lib/utils_db'
-import { VStack, HStack, Heading } from '@yamada-ui/react'
-import { LineChart } from '@yamada-ui/charts'
+import { VStack, Heading } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
-import Maps from '@/components/GoogleMap'
+import GoogleMap from '@/components/GoogleMap'
 
 interface HourlyUnitsData {
   time: string
@@ -48,23 +46,46 @@ interface ChartData {
   }
 }
 
+interface GroupedData {
+  [key: string]: HourlyData
+}
+
 const styles = {
   container: {
     width: '90%',
-    margin: '50px auto',
-    padding: '50px',
+    margin: '20px auto',
+    padding: '30px',
     borderRadius: '10px',
     border: '0.2rem solid',
-    borderColor: '#2563eb',
+    borderColor: '#6592f1',
+    overflowX: 'auto' as 'auto',
   },
   heading: {
     margin: '0 auto',
   },
-  grid: {
-    margin: '20px 0',
-  },
-  scroll: {
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    margin: '10px auto',
+    textAlign: 'center',
     overflowX: 'auto' as 'auto',
+  },
+  thTd: {
+    padding: '2px',
+    border: '1px solid #ddd',
+  },
+  th: {
+    backgroundColor: '#6592f1',
+    color: 'white',
+    position: 'sticky',
+    padding: '12px',
+  },
+  dateRow: {
+    backgroundColor: '#6592f1',
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'left',
+    padding: '12px',
   },
 }
 
@@ -83,8 +104,6 @@ const Home = ({ weather }: any) => {
   const log = Number(weather.longitude)
   const chartGroup: ChartData = {}
 
-  const stands: any = useMemo(() => [{ dataKey: '気温', color: 'orange.500' }], [])
-  const rains: any = useMemo(() => [{ dataKey: '降水確率', color: 'blue.500' }], [])
   let times = 0
 
   time.forEach((timeString: string, index: number) => {
@@ -97,11 +116,11 @@ const Home = ({ weather }: any) => {
     }
 
     chartGroup[date].temp.push({
-      name: `${times}時`,
+      name: String(times) as string,
       気温: temperature_2m[index] as number,
     })
     chartGroup[date].rain.push({
-      name: `${times}時`,
+      name: String(times) as string,
       降水確率: precipitation_probability[index] as number,
     })
 
@@ -110,43 +129,71 @@ const Home = ({ weather }: any) => {
       times = 0
     }
   })
-  const chartsData = useMemo(() => chartGroup, [])
+  const groupedData: GroupedData = {}
+  time.forEach((timeString: string, index: number) => {
+    const date = getDate(timeString)
+    if (!groupedData[date]) {
+      groupedData[date] = {
+        time: [],
+        temperature_2m: [],
+        precipitation_probability: [],
+      }
+    }
+    groupedData[date].time.push(timeString)
+    groupedData[date].temperature_2m.push(temperature_2m[index])
+    groupedData[date].precipitation_probability.push(precipitation_probability[index])
+  })
+
+  const hours = Array.from({ length: 24 }, (_, i) => i)
+
   return (
     <VStack style={styles.container}>
       <Heading size='md'>1週間分の天気</Heading>
-      {Object.keys(chartsData).map((date) => (
-        <VStack key={date}>
-          <Heading size='sm'>{date}</Heading>
-          <HStack style={styles.scroll} key={date}>
-            <VStack>
-              <Heading size='xs'>気温</Heading>
-              <LineChart
-                size='sm'
-                unit='℃'
-                data={chartsData[date].temp as any}
-                series={stands}
-                dataKey='name'
-              />
-            </VStack>
-            <VStack>
-              <Heading size='xs'>降水確率</Heading>
-              <LineChart
-                size='sm'
-                unit='%'
-                data={chartsData[date].rain as any}
-                series={rains}
-                dataKey='name'
-              />
-            </VStack>
-          </HStack>
-        </VStack>
-      ))}
-      <Maps lat={lat} lng={log} />
+      <table style={styles.table as any}>
+        <thead>
+          <tr>
+            <th style={{ ...styles.thTd, ...(styles.th as any) }}></th>
+            {hours.map((time) => (
+              <th key={time} style={{ ...styles.thTd, ...(styles.th as any) }}>
+                {time}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(groupedData).map((date) => (
+            <React.Fragment key={date}>
+              <tr>
+                <td colSpan={hours.length + 1} style={styles.dateRow as any}>
+                  {date}
+                </td>
+              </tr>
+              <tr>
+                <td style={styles.thTd}>気温 (°C)</td>
+                {groupedData[date].temperature_2m.map((temp, index) => (
+                  <td key={index} style={styles.thTd}>
+                    {temp}
+                  </td>
+                ))}
+              </tr>
+              <tr>
+                <td style={styles.thTd}>降雨率 (%)</td>
+                {groupedData[date].precipitation_probability.map((prob, index) => (
+                  <td key={index} style={styles.thTd}>
+                    {prob}
+                  </td>
+                ))}
+              </tr>
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+      <GoogleMap lat={lat} lng={log} />
     </VStack>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: any = async (context: any) => {
   const place = context.params?.place
   const { lat, lng } = place ? { lat: place[0], lng: place[1] } : { lat: 35.6895, lng: 139.6923 }
 

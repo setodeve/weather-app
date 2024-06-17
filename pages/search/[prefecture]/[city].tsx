@@ -1,5 +1,4 @@
 import Town from '@/components/Town'
-import { GetServerSideProps } from 'next'
 
 interface Location {
   town: string
@@ -17,7 +16,7 @@ const Home = ({ prefecture, city, town }: TownProps) => {
   return <Town pref={prefecture as string} city={city as string} townes={town as Location[]} />
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: any = async (context: any) => {
   const { prefecture, city } = context.params || {}
 
   if (!prefecture || !city) {
