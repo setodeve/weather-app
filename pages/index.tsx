@@ -1,5 +1,6 @@
-import React from 'react'
-import { Grid, GridItem, Heading, VStack, Link } from '@yamada-ui/react'
+import React, { useCallback, useMemo } from 'react'
+import { useRouter } from 'next/router'
+import { Grid, GridItem, Heading, VStack, Link, Button, Text } from '@yamada-ui/react'
 
 const styles = {
   container: {
@@ -10,11 +11,8 @@ const styles = {
     border: '0.2rem solid',
     borderColor: '#6592f1',
   },
-  heading: {
+  center: {
     margin: '0 auto',
-  },
-  grid: {
-    margin: '20px 0',
   },
 }
 
@@ -68,35 +66,70 @@ const prefectures: string[] = [
   '沖縄県',
 ]
 
-interface Props {
-  content: string
-}
+const Home = () => {
+  const router = useRouter()
 
-const Home = ({ content }: Props) => {
+  const getLocation = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (navigator.geolocation) {
+        e.preventDefault()
+        navigator.geolocation.watchPosition(
+          (position) => {
+            router.push(
+              `/weather/${encodeURIComponent(position.coords.latitude)}/${encodeURIComponent(position.coords.longitude)}`,
+              undefined,
+              { shallow: true },
+            )
+          },
+          () => {
+            alert('位置情報が取得できませんでした。')
+          },
+        )
+      }
+    },
+    [router],
+  )
+
+  const renderPrefectures = useMemo(() => {
+    return prefectures.map((prefecture) => (
+      <GridItem key={prefecture}>
+        <Heading size='xs' style={styles.center}>
+          <Link href={`/search/${encodeURIComponent(prefecture)}`}>{prefecture}</Link>
+        </Heading>
+      </GridItem>
+    ))
+  }, [])
+
   return (
     <VStack style={styles.container}>
-      <Heading size='md'>旅先の都道府県を選択してください</Heading>
-      <Grid templateColumns='repeat(10, 1fr)' gap='md' style={styles.grid}>
-        {prefectures.map((prefecture) => {
-          return (
-            <GridItem key={prefecture}>
-              <Heading size='xs' key={prefecture} style={styles.heading}>
-                <Link href={`/search/${encodeURIComponent(prefecture)}`}>{prefecture}</Link>
-              </Heading>
-            </GridItem>
-          )
-        })}
-      </Grid>
+      <VStack style={styles.center}>
+        <Text style={styles.center}>
+          旅先の天気を確認してみよう。以下の２つの方法から天気がみれるよ！
+        </Text>
+      </VStack>
+      <VStack style={styles.center}>
+        <Heading size='md' style={styles.center}>
+          現在地から天気を確認する
+        </Heading>
+        <Button colorScheme='blue' onClick={getLocation} width='40%' style={styles.center}>
+          現在地を取得
+        </Button>
+      </VStack>
+      <VStack style={styles.center}>
+        <Heading size='md' style={styles.center}>
+          住所から天気を確認する
+        </Heading>
+        <Grid templateColumns='repeat(8, 1fr)' gap='md' style={styles.center}>
+          {renderPrefectures}
+        </Grid>
+      </VStack>
     </VStack>
   )
 }
 
 export const getStaticProps = async () => {
-  const content = ''
   return {
-    props: {
-      content,
-    },
+    props: {},
   }
 }
 
