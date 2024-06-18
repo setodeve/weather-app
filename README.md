@@ -1,11 +1,13 @@
 # 天気確認アプリ
 
+## デプロイ先
 https://weather-app-nine-kappa-50.vercel.app/
+
 ## ホーム画面
-<img src="./public/home.png"/>
+<img src="./public/home.png" alt="Home Screen"/>
 
 ## 天気確認画面
-<img src="./public/weather.gif"/>
+<img src="./public/weather.gif" alt="Weather Screen"/>
 
 ## 機能
 - 現在地から天気確認
