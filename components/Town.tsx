@@ -47,7 +47,9 @@ const Town: React.FC<TownData> = ({ pref, city, townes }) => {
           ) : null,
         )
       ) : (
-        <p>No towns available</p>
+        <Heading size='md' style={styles.heading}>
+          No towns available
+        </Heading>
       ),
     [townes],
   )

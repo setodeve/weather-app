@@ -71,9 +71,9 @@ const Home = () => {
 
   const getLocation = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault()
       if (navigator.geolocation) {
-        e.preventDefault()
-        navigator.geolocation.watchPosition(
+        navigator.geolocation.getCurrentPosition(
           (position) => {
             router.push(
               `/weather/${encodeURIComponent(position.coords.latitude)}/${encodeURIComponent(position.coords.longitude)}`,
@@ -105,7 +105,7 @@ const Home = () => {
     <VStack style={styles.container}>
       <VStack style={styles.center}>
         <Text style={styles.center}>
-          旅先の天気を確認してみよう。以下の２つの方法から天気がみれるよ！
+          旅先の天気を確認してみよう。以下の２つの方法から天気がみれます！
         </Text>
       </VStack>
       <VStack style={styles.center}>

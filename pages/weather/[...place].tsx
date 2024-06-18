@@ -1,25 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { createHourlyData } from '@/lib/utils_db'
 import { VStack, Heading, Button } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
 import WeatherMap from '@/components/WeatherMap'
 import { useRouter } from 'next/router'
-interface HourlyData {
-  time: string[]
-  temperature_2m: number[]
-  precipitation_probability: number[]
-}
-
-interface ChartData {
-  [key: string]: {
-    temp: { name: string; 気温: number }[]
-    rain: { name: string; 降水確率: number }[]
-  }
-}
-
-interface WeatherMap {
-  [key: string]: HourlyData
-}
 
 const styles = {
   container: {
@@ -48,7 +32,6 @@ const styles = {
     position: 'sticky',
     padding: '5px',
     textAlign: 'center',
-    // borderBottom: '1rem solid #ddd',
   },
   tr: {
     borderBottom: '0.2rem solid white',
@@ -75,6 +58,16 @@ const styles = {
   },
 }
 
+interface HourlyData {
+  time: string[]
+  temperature_2m: number[]
+  precipitation_probability: number[]
+}
+
+interface WeatherMapData {
+  [key: string]: HourlyData
+}
+
 const Home = ({ weather }: any) => {
   const hourlyWeather = weather.hourly || weather
   const { time, temperature_2m, precipitation_probability } = hourlyWeather
@@ -83,15 +76,18 @@ const Home = ({ weather }: any) => {
     const date = toZonedTime(new Date(timeString), 'Asia/Tokyo')
     return date.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }).split(' ')[0]
   }
-  const goHome = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    router.push('/')
-  }
+  const goHome = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault()
+      router.push('/')
+    },
+    [router],
+  )
   const lat = Number(weather.latitude)
   const log = Number(weather.longitude)
 
-  const groupedData: WeatherMap = useMemo(() => {
-    const group: WeatherMap = {}
+  const groupedData: WeatherMapData = useMemo(() => {
+    const group: WeatherMapData = {}
 
     time.forEach((timeString: string, index: number) => {
       const date = getDate(timeString)
@@ -114,7 +110,7 @@ const Home = ({ weather }: any) => {
 
   return (
     <VStack style={styles.container}>
-      <Button colorScheme='blue' onClick={goHome} width='20%' style={styles.center}>
+      <Button colorScheme='blue' onClick={goHome} width='40%' style={styles.center}>
         ホームに戻る
       </Button>
 

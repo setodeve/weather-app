@@ -1,27 +1,36 @@
-# 天気予報確認アプリ
+# 天気確認アプリ
 
-<img src="./public/home.png"/>
+## デプロイ先
+https://weather-app-nine-kappa-50.vercel.app/
+
+## ホーム画面
+<img src="./public/home.png" alt="Home Screen"/>
+
+## 天気確認画面
+<img src="./public/weather.gif" alt="Weather Screen"/>
 
 ## 機能
 - 現在地から天気確認
 - 住所から天気確認
 ## 非機能
-- 定期的な古いDB上のデータクリーンアップ
+- DB上の古いデータの定期的な削除
 
 ## 使用技術
-### フロント
+### フロントエンド
 - Next.js
-- Typescript
+- TypeScript
   
 ### バックエンド
-- prisma
+- Prisma
 - PostgreSQL
-- vercel(deploy/storage)
-  
+- Vercel（デプロイ/ストレージ/Cronジョブ）
+
 ### 使用API
-- Google Map API
 - Geolonia 住所データ
   - https://geolonia.github.io/japanese-addresses/
+- Open-Metro 天気データ
+  - https://open-meteo.com/
+- Google Map API
 
 ### ER図
 ```mermaid
