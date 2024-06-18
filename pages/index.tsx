@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { useRouter } from 'next/router'
-import { Grid, GridItem, Heading, VStack, Link, Button, Text } from '@yamada-ui/react'
+import { Heading, VStack, Button, Box, Image, HStack } from '@yamada-ui/react'
+import SearchBox from '@/components/SearchBox'
 
 const styles = {
   container: {
@@ -15,56 +16,6 @@ const styles = {
     margin: '0 auto',
   },
 }
-
-const prefectures: string[] = [
-  '北海道',
-  '青森県',
-  '岩手県',
-  '宮城県',
-  '秋田県',
-  '山形県',
-  '福島県',
-  '茨城県',
-  '栃木県',
-  '群馬県',
-  '埼玉県',
-  '千葉県',
-  '東京都',
-  '神奈川県',
-  '新潟県',
-  '富山県',
-  '石川県',
-  '福井県',
-  '山梨県',
-  '長野県',
-  '岐阜県',
-  '静岡県',
-  '愛知県',
-  '三重県',
-  '滋賀県',
-  '京都府',
-  '大阪府',
-  '兵庫県',
-  '奈良県',
-  '和歌山県',
-  '鳥取県',
-  '島根県',
-  '岡山県',
-  '広島県',
-  '山口県',
-  '徳島県',
-  '香川県',
-  '愛媛県',
-  '高知県',
-  '福岡県',
-  '佐賀県',
-  '長崎県',
-  '熊本県',
-  '大分県',
-  '宮崎県',
-  '鹿児島県',
-  '沖縄県',
-]
 
 const Home = () => {
   const router = useRouter()
@@ -91,38 +42,38 @@ const Home = () => {
     [router],
   )
 
-  const renderPrefectures = useMemo(() => {
-    return prefectures.map((prefecture) => (
-      <GridItem key={prefecture}>
-        <Heading size='xs' style={styles.center}>
-          <Link href={`/search/${encodeURIComponent(prefecture)}`}>{prefecture}</Link>
-        </Heading>
-      </GridItem>
-    ))
-  }, [])
+  const handlePlacesChanged = (places: google.maps.places.PlaceResult[]) => {
+    const lat = places[0].geometry?.location?.lat() as number
+    const lng = places[0].geometry?.location?.lng() as number
 
+    router.push(`/weather/${encodeURIComponent(lat)}/${encodeURIComponent(lng)}`, undefined, {
+      shallow: true,
+    })
+  }
   return (
     <VStack style={styles.container}>
       <VStack style={styles.center}>
-        <Text style={styles.center}>
-          旅先の天気を確認してみよう。以下の２つの方法から天気がみれます！
-        </Text>
+        <HStack style={styles.center}>
+          <Image width='50px' src='太陽.png' alt='太陽' />
+          <Heading size='sm'>
+            旅先の天気を確認してみよう。以下の2つの方法から天気がみれます！
+          </Heading>
+          <Image width='50px' src='雨.png' alt='雨' />
+        </HStack>
       </VStack>
       <VStack style={styles.center}>
-        <Heading size='md' style={styles.center}>
-          現在地から天気を確認する
+        <Heading size='sm' style={styles.center}>
+          現在地から天気を確認
         </Heading>
         <Button colorScheme='blue' onClick={getLocation} width='40%' style={styles.center}>
           現在地を取得
         </Button>
       </VStack>
-      <VStack style={styles.center}>
-        <Heading size='md' style={styles.center}>
-          住所から天気を確認する
+      <VStack>
+        <Heading size='sm' style={styles.center}>
+          行き先を検索して確認
         </Heading>
-        <Grid templateColumns='repeat(8, 1fr)' gap='md' style={styles.center}>
-          {renderPrefectures}
-        </Grid>
+        <SearchBox placeholder='行き先を入力' onPlacesChanged={handlePlacesChanged} />
       </VStack>
     </VStack>
   )

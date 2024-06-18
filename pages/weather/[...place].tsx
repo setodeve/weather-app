@@ -2,7 +2,6 @@ import React, { useCallback, useMemo } from 'react'
 import { createHourlyData } from '@/lib/utils_db'
 import { VStack, Heading, Button } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
-import WeatherMap from '@/components/WeatherMap'
 import { useRouter } from 'next/router'
 
 const styles = {
@@ -83,8 +82,6 @@ const Home = ({ weather }: any) => {
     },
     [router],
   )
-  const lat = Number(weather.latitude)
-  const log = Number(weather.longitude)
 
   const groupedData: WeatherMapData = useMemo(() => {
     const group: WeatherMapData = {}
@@ -154,7 +151,6 @@ const Home = ({ weather }: any) => {
           ))}
         </tbody>
       </table>
-      <WeatherMap lat={lat} lng={log} />
     </VStack>
   )
 }
