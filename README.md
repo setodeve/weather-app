@@ -29,8 +29,6 @@ https://weather-app-nine-kappa-50.vercel.app/
   - Vercel（デプロイ/ストレージ/Cronジョブ）
 
 - 使用API
-  - Geolonia 住所データ
-    - https://geolonia.github.io/japanese-addresses/
   - Open-Metro 天気データ
     - https://open-meteo.com/
   - Google Map API
