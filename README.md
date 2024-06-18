@@ -14,7 +14,7 @@ https://weather-app-nine-kappa-50.vercel.app/
 ## 機能一覧
 - 機能
   - 現在地から天気確認
-  - 住所から天気確認
+  - 行き先から天気確認
 - 非機能
   - DB上の古いデータの定期的な削除
 
@@ -46,6 +46,5 @@ erDiagram
         DateTime created_date "作成日(index)"
     }
 ```
-
-#### HourlyDataデータ例
+- HourlyDataデータ例
 <img src='./public/data-example.png' alt='example'>
