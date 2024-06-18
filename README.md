@@ -1,8 +1,12 @@
 # 天気確認アプリ
 
-|ホーム画面|天気確認画面|
-|:-:|:-:|
-|<img src="./public/home.png" width="650px" alt="Home Screen"/>|<img src="./public/weather.gif" alt="Weather Screen"/>|
+|ホーム画面|
+|:-:|
+|<img src="./public/home.png" alt="Home Screen"/>|
+
+|天気確認画面|
+|:-:|
+|<img src="./public/weather.png" alt="Weather Screen"/>|
 
 ## デプロイ先
 https://weather-app-nine-kappa-50.vercel.app/

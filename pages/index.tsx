@@ -5,7 +5,7 @@ import SearchBox from '@/components/SearchBox'
 
 const styles = {
   container: {
-    width: '70%',
+    width: '60%',
     margin: '50px auto',
     padding: '30px',
     borderRadius: '10px',
