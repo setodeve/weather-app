@@ -151,6 +151,9 @@ const Home = ({ weather }: any) => {
           ))}
         </tbody>
       </table>
+      <iframe
+        src={`https://maps.google.co.jp/maps?output=embed&q=${weather.latitude},${weather.longitude}&z=13`}
+      ></iframe>
     </VStack>
   )
 }
