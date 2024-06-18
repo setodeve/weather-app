@@ -36,12 +36,15 @@ https://weather-app-nine-kappa-50.vercel.app/
 ```mermaid
 erDiagram
     HourlyData {
-        String id PK "default(cuid())"
-        Float latitude
-        Float longitude
-        String[] time
-        Float[] temperature_2m
-        Float[] precipitation_probability
-        DateTime created_date "index"
+        String id PK "ID"
+        Float latitude "緯度"
+        Float longitude "経度"
+        String[] time "1週間の時間"
+        Float[] temperature_2m "1週間の気温"
+        Float[] precipitation_probability "1週間の降水率"
+        DateTime created_date "作成日(index)"
     }
 ```
+
+#### データ例
+<img src='./public/data-example.png' alt='example'>
