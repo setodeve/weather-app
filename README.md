@@ -1,38 +1,37 @@
 # 天気確認アプリ
 
+|ホーム画面|天気確認画面|
+|:-:|:-:|
+|<img src="./public/home.png" width="650px" alt="Home Screen"/>|<img src="./public/weather.gif" alt="Weather Screen"/>|
+
 ## デプロイ先
 https://weather-app-nine-kappa-50.vercel.app/
 
-## ホーム画面
-<img src="./public/home.png" alt="Home Screen"/>
-
-## 天気確認画面
-<img src="./public/weather.gif" alt="Weather Screen"/>
-
-## 機能
-- 現在地から天気確認
-- 住所から天気確認
-## 非機能
-- DB上の古いデータの定期的な削除
+## 機能一覧
+- 機能
+  - 現在地から天気確認
+  - 住所から天気確認
+- 非機能
+  - DB上の古いデータの定期的な削除
 
 ## 使用技術
-### フロントエンド
-- Next.js
-- TypeScript
+- フロントエンド
+  - Next.js
+  - TypeScript
   
-### バックエンド
-- Prisma
-- PostgreSQL
-- Vercel（デプロイ/ストレージ/Cronジョブ）
+- バックエンド
+  - Prisma
+  - PostgreSQL
+  - Vercel（デプロイ/ストレージ/Cronジョブ）
 
-### 使用API
-- Geolonia 住所データ
-  - https://geolonia.github.io/japanese-addresses/
-- Open-Metro 天気データ
-  - https://open-meteo.com/
-- Google Map API
+- 使用API
+  - Geolonia 住所データ
+    - https://geolonia.github.io/japanese-addresses/
+  - Open-Metro 天気データ
+    - https://open-meteo.com/
+  - Google Map API
 
-### ER図
+### DB構成図
 ```mermaid
 erDiagram
     HourlyData {
@@ -46,5 +45,5 @@ erDiagram
     }
 ```
 
-#### データ例
+#### HourlyDataデータ例
 <img src='./public/data-example.png' alt='example'>
