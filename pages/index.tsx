@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { useRouter } from 'next/router'
-import { Grid, GridItem, Heading, VStack, Link, Button, Text } from '@yamada-ui/react'
+import { Heading, VStack, Button, Box, Image, HStack } from '@yamada-ui/react'
 import SearchBox from '@/components/SearchBox'
 
 const styles = {
@@ -16,7 +16,6 @@ const styles = {
     margin: '0 auto',
   },
 }
-
 
 const Home = () => {
   const router = useRouter()
@@ -54,12 +53,16 @@ const Home = () => {
   return (
     <VStack style={styles.container}>
       <VStack style={styles.center}>
-        <Text style={styles.center}>
-          旅先の天気を確認してみよう。以下の3つの方法から天気がみれます！
-        </Text>
+        <HStack style={styles.center}>
+          <Image width='50px' src='太陽.png' alt='太陽' />
+          <Heading size='sm'>
+            旅先の天気を確認してみよう。以下の2つの方法から天気がみれます！
+          </Heading>
+          <Image width='50px' src='雨.png' alt='雨' />
+        </HStack>
       </VStack>
       <VStack style={styles.center}>
-        <Heading size='md' style={styles.center}>
+        <Heading size='sm' style={styles.center}>
           現在地から天気を確認
         </Heading>
         <Button colorScheme='blue' onClick={getLocation} width='40%' style={styles.center}>
@@ -67,7 +70,7 @@ const Home = () => {
         </Button>
       </VStack>
       <VStack>
-        <Heading size='md' style={styles.center}>
+        <Heading size='sm' style={styles.center}>
           行き先を検索して確認
         </Heading>
         <SearchBox placeholder='行き先を入力' onPlacesChanged={handlePlacesChanged} />
