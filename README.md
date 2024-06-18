@@ -1,47 +1,49 @@
 # 天気確認アプリ
 
+|ホーム画面|天気確認画面|
+|:-:|:-:|
+|<img src="./public/home.png" width="650px" alt="Home Screen"/>|<img src="./public/weather.gif" alt="Weather Screen"/>|
+
 ## デプロイ先
 https://weather-app-nine-kappa-50.vercel.app/
 
-## ホーム画面
-<img src="./public/home.png" alt="Home Screen"/>
-
-## 天気確認画面
-<img src="./public/weather.gif" alt="Weather Screen"/>
-
-## 機能
-- 現在地から天気確認
-- 住所から天気確認
-## 非機能
-- DB上の古いデータの定期的な削除
+## 機能一覧
+- 機能
+  - 現在地から天気確認
+  - 住所から天気確認
+- 非機能
+  - DB上の古いデータの定期的な削除
 
 ## 使用技術
-### フロントエンド
-- Next.js
-- TypeScript
+- フロントエンド
+  - Next.js
+  - TypeScript
   
-### バックエンド
-- Prisma
-- PostgreSQL
-- Vercel（デプロイ/ストレージ/Cronジョブ）
+- バックエンド
+  - Prisma
+  - PostgreSQL
+  - Vercel（デプロイ/ストレージ/Cronジョブ）
 
-### 使用API
-- Geolonia 住所データ
-  - https://geolonia.github.io/japanese-addresses/
-- Open-Metro 天気データ
-  - https://open-meteo.com/
-- Google Map API
+- 使用API
+  - Geolonia 住所データ
+    - https://geolonia.github.io/japanese-addresses/
+  - Open-Metro 天気データ
+    - https://open-meteo.com/
+  - Google Map API
 
-### ER図
+### DB構成図
 ```mermaid
 erDiagram
     HourlyData {
-        String id PK "default(cuid())"
-        Float latitude
-        Float longitude
-        String[] time
-        Float[] temperature_2m
-        Float[] precipitation_probability
-        DateTime created_date "index"
+        String id PK "ID"
+        Float latitude "緯度"
+        Float longitude "経度"
+        String[] time "1週間の時間"
+        Float[] temperature_2m "1週間の気温"
+        Float[] precipitation_probability "1週間の降水率"
+        DateTime created_date "作成日(index)"
     }
 ```
+
+#### HourlyDataデータ例
+<img src='./public/data-example.png' alt='example'>
