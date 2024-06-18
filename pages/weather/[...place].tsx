@@ -64,7 +64,7 @@ interface HourlyData {
   precipitation_probability: number[]
 }
 
-interface WeatherMap {
+interface WeatherMapData {
   [key: string]: HourlyData
 }
 
@@ -86,8 +86,8 @@ const Home = ({ weather }: any) => {
   const lat = Number(weather.latitude)
   const log = Number(weather.longitude)
 
-  const groupedData: WeatherMap = useMemo(() => {
-    const group: WeatherMap = {}
+  const groupedData: WeatherMapData = useMemo(() => {
+    const group: WeatherMapData = {}
 
     time.forEach((timeString: string, index: number) => {
       const date = getDate(timeString)
