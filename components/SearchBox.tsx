@@ -27,21 +27,23 @@ const SearchBox: React.FC<SearchBoxProps> = ({ placeholder, onPlacesChanged }) =
     loader
       .load()
       .then(() => {
-        if (inputRef.current) {
-          const searchBox = new google.maps.places.SearchBox(inputRef.current)
-          searchBoxRef.current = searchBox
+        if (!inputRef.current) {
+          console.error('Input reference is not available.');
+          return;
+        }
+        const searchBox = new google.maps.places.SearchBox(inputRef.current)
+        searchBoxRef.current = searchBox
 
-          const handlePlacesChanged = () => {
-            if (onPlacesChanged) {
-              onPlacesChanged(searchBox.getPlaces() || [])
-            }
+        const handlePlacesChanged = () => {
+          if (onPlacesChanged) {
+            onPlacesChanged(searchBox.getPlaces() || [])
           }
+        }
 
-          searchBox.addListener('places_changed', handlePlacesChanged)
+        searchBox.addListener('places_changed', handlePlacesChanged)
 
-          return () => {
-            google.maps.event.clearInstanceListeners(searchBox)
-          }
+        return () => {
+          google.maps.event.clearInstanceListeners(searchBox)
         }
       })
       .catch((e) => {
