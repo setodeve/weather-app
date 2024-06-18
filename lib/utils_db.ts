@@ -13,11 +13,6 @@ interface HourlyData {
   created_date: Date
 }
 
-interface PlaceData {
-  lat: number
-  lng: number
-}
-
 const getZonedTimeRange = (date: Date, timezone: string) => {
   const zonedDate = toZonedTime(date, timezone)
   const dateStart = startOfDay(zonedDate)
