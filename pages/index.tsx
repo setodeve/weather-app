@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Heading, VStack, Button, Box, Image, HStack } from '@yamada-ui/react'
+import { Heading, VStack, Button, Image, Loading, HStack } from '@yamada-ui/react'
 import SearchBox from '@/components/SearchBox'
 
 const styles = {
@@ -19,24 +19,29 @@ const styles = {
 
 const Home = () => {
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
   const getLocation = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault()
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            router.push(
-              `/weather/${encodeURIComponent(position.coords.latitude)}/${encodeURIComponent(position.coords.longitude)}`,
-              undefined,
-              { shallow: true },
-            )
-          },
-          () => {
-            alert('位置情報が取得できませんでした。')
-          },
-          { timeout: 5000 },
+      setLoading(true)
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+          } else {
+            reject(new Error('Geolocation not supported'))
+          }
+        })
+        router.push(
+          `/weather/${encodeURIComponent(position.coords.latitude)}/${encodeURIComponent(position.coords.longitude)}`,
+          undefined,
+          { shallow: true },
         )
+      } catch (error) {
+        alert('位置情報が取得できませんでした。')
+      } finally {
+        setLoading(false)
       }
     },
     [router],
@@ -50,6 +55,7 @@ const Home = () => {
       shallow: true,
     })
   }
+
   return (
     <VStack style={styles.container}>
       <VStack style={styles.center}>
@@ -65,9 +71,19 @@ const Home = () => {
         <Heading size='sm' style={styles.center}>
           現在地から天気を確認
         </Heading>
-        <Button colorScheme='blue' onClick={getLocation} width='40%' style={styles.center}>
-          現在地を取得
-        </Button>
+        {loading ? (
+          <Loading variant='circles' size='6xl' style={styles.center} />
+        ) : (
+          <Button
+            colorScheme='blue'
+            onClick={getLocation}
+            width='40%'
+            style={styles.center}
+            disabled={loading}
+          >
+            現在地を取得
+          </Button>
+        )}
       </VStack>
       <VStack>
         <Heading size='sm' style={styles.center}>
