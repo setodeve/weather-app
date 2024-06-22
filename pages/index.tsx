@@ -1,13 +1,15 @@
 import React, { useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Heading, VStack, Button, Image, Loading, HStack } from '@yamada-ui/react'
+import { Heading, VStack, Button, Image, Loading, HStack, Text, Box } from '@yamada-ui/react'
 import SearchBox from '@/components/SearchBox'
 
 const styles = {
   container: {
-    width: '60%',
+    width: '75%',
+    maxWidth: '500px',
+    minWidth: '450px',
     margin: '50px auto',
-    padding: '30px',
+    padding: '20px',
     borderRadius: '10px',
     border: '0.2rem solid',
     borderColor: '#6592f1',
@@ -58,15 +60,15 @@ const Home = () => {
 
   return (
     <VStack style={styles.container}>
-      <VStack style={styles.center}>
-        <HStack style={styles.center}>
-          <Image width='50px' src='太陽.png' alt='太陽' />
-          <Heading size='sm'>
-            旅先の天気を確認してみよう。以下の2つの方法から天気がみれます！
-          </Heading>
-          <Image width='50px' src='雨.png' alt='雨' />
-        </HStack>
-      </VStack>
+      <HStack style={styles.center}>
+        <Image width='50px' src='太陽.png' alt='太陽' />
+        <Heading size='xs' minWidth='10%'>
+          旅先の天気を確認してみよう!
+          <br />
+          以下の2つの方法から天気がみれます!
+        </Heading>
+        <Image width='50px' src='雨.png' alt='雨' />
+      </HStack>
       <VStack style={styles.center}>
         <Heading size='sm' style={styles.center}>
           現在地から天気を確認
@@ -74,13 +76,7 @@ const Home = () => {
         {loading ? (
           <Loading variant='circles' size='6xl' style={styles.center} />
         ) : (
-          <Button
-            colorScheme='blue'
-            onClick={getLocation}
-            width='40%'
-            style={styles.center}
-            disabled={loading}
-          >
+          <Button colorScheme='blue' onClick={getLocation} style={styles.center} disabled={loading}>
             現在地を取得
           </Button>
         )}
