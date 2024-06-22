@@ -28,8 +28,8 @@ const SearchBox: React.FC<SearchBoxProps> = ({ placeholder, onPlacesChanged }) =
       .load()
       .then(() => {
         if (!inputRef.current) {
-          console.error('Input reference is not available.');
-          return;
+          console.error('Input reference is not available.')
+          return
         }
         const searchBox = new google.maps.places.SearchBox(inputRef.current)
         searchBoxRef.current = searchBox
@@ -52,7 +52,13 @@ const SearchBox: React.FC<SearchBoxProps> = ({ placeholder, onPlacesChanged }) =
   }, [onPlacesChanged])
 
   return (
-    <Input style={styles.center} width='50%' ref={inputRef} placeholder={placeholder} type='text' />
+    <Input
+      style={styles.center}
+      width='10rem'
+      ref={inputRef}
+      placeholder={placeholder}
+      type='text'
+    />
   )
 }
 
