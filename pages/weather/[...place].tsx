@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from 'react'
 import { createHourlyData } from '@/lib/utils_db'
-import { VStack, Heading, Button } from '@yamada-ui/react'
+import { VStack, Heading, Button, HStack } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
 import { useRouter } from 'next/router'
 import type { CSSProperties } from 'react'
 const styles: { [key: string]: CSSProperties } = {
   container: {
     width: '90%',
-    margin: '20px auto',
-    padding: '30px',
+    margin: '10px auto',
+    padding: '20px',
     borderRadius: '10px',
     border: '0.2rem solid #6592f1',
     overflowX: 'auto' as 'auto',
@@ -16,7 +16,7 @@ const styles: { [key: string]: CSSProperties } = {
   table: {
     width: '100%',
     borderCollapse: 'collapse',
-    margin: '10px auto',
+    margin: '5px auto',
     textAlign: 'center',
     overflowX: 'auto' as 'auto',
   },
@@ -111,7 +111,12 @@ const Home = ({ weather }: any) => {
 
   return (
     <VStack style={styles.container}>
-      <Heading size='md'>1週間分の天気</Heading>
+      <HStack>
+        <Heading size='md'>1週間分の天気</Heading>
+        <Button variant='outline' colorScheme='blue' onClick={goHome}>
+          ホームに戻る
+        </Button>
+      </HStack>
       <table style={styles.table as any}>
         <tbody>
           {Object.keys(groupedData).map((date) => (
@@ -148,15 +153,6 @@ const Home = ({ weather }: any) => {
       <iframe
         src={`https://maps.google.co.jp/maps?output=embed&q=${weather.latitude},${weather.longitude}&z=13`}
       ></iframe>
-      <Button
-        variant='outline'
-        colorScheme='blue'
-        onClick={goHome}
-        width='40%'
-        style={styles.center}
-      >
-        ホームに戻る
-      </Button>
     </VStack>
   )
 }
