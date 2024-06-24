@@ -18,7 +18,7 @@ const styles: { [key: string]: CSSProperties } = {
   center: {
     margin: '0 auto',
   },
-  lodingCenter: {
+  loadingCenter: {
     margin: '0 auto',
     position: 'absolute',
     top: '30%',
@@ -60,17 +60,16 @@ const Home = () => {
   const handlePlacesChanged = (places: google.maps.places.PlaceResult[]) => {
     const lat = places[0].geometry?.location?.lat() as number
     const lng = places[0].geometry?.location?.lng() as number
-
+    setLoading(true)
     router.push(`/weather/${encodeURIComponent(lat)}/${encodeURIComponent(lng)}`, undefined, {
       shallow: true,
     })
-    setLoading(true)
   }
 
   return (
     <VStack>
       {loading ? (
-        <Loading variant='circles' size='6xl' style={styles.lodingCenter} />
+        <Loading variant='circles' size='6xl' style={styles.loadingCenter} />
       ) : (
         <VStack style={styles.container}>
           <HStack style={styles.center}>
