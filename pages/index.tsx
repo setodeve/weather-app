@@ -30,18 +30,20 @@ const Home = () => {
       try {
         const position = await new Promise<GeolocationPosition>((resolve, reject) => {
           if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 })
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 })
           } else {
             reject(new Error('Geolocation not supported'))
           }
         })
-        router.push(
-          `/weather/${encodeURIComponent(position.coords.latitude)}/${encodeURIComponent(position.coords.longitude)}`,
-          undefined,
-          { shallow: true },
-        )
+        const { latitude, longitude } = position.coords
+        const encodedLat = encodeURIComponent(latitude)
+        const encodedLng = encodeURIComponent(longitude)
+
+        setTimeout(() => {
+          router.push(`/weather/${encodedLat}/${encodedLng}`, undefined, { shallow: true })
+        }, 0)
       } catch (error) {
-        alert('位置情報が取得できませんでした。')
+        console.error('位置情報の取得に失敗しました。', error)
       } finally {
         setLoading(false)
       }
