@@ -20,7 +20,7 @@ const styles: { [key: string]: CSSProperties } = {
     textAlign: 'center',
     overflowX: 'auto' as 'auto',
   },
-  thTd: { fontSize: '13px' },
+  trTd: { fontSize: '13px' },
   thTitle: {
     fontSize: '13px',
     textAlign: 'center',
@@ -34,14 +34,14 @@ const styles: { [key: string]: CSSProperties } = {
     fontSize: '13px',
     fontWeight: '600',
   },
-  th: {
+  trTime: {
     backgroundColor: '#1453d0',
     color: 'white',
     position: 'sticky',
     padding: '5px',
     textAlign: 'center',
+    fontWeight: 'bold',
   },
-
   dataTmpTb: {
     border: '0.1rem solid #ddd',
   },
@@ -51,7 +51,7 @@ const styles: { [key: string]: CSSProperties } = {
   dateRow: {
     backgroundColor: '#1453d0',
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '800',
     textAlign: 'left',
     padding: '5px',
     fontSize: '15px',
@@ -113,29 +113,21 @@ const Home = ({ weather }: any) => {
     <VStack style={styles.container}>
       <Heading size='md'>1週間分の天気</Heading>
       <table style={styles.table as any}>
-        <thead>
-          <tr style={styles.tr}>
-            <th style={{ ...styles.thTitle }}>Day \ Time</th>
-            {hours.map((time) => (
-              <th key={time} style={{ ...styles.thTd, ...(styles.th as any) }}>
-                {time}時
-              </th>
-            ))}
-          </tr>
-        </thead>
         <tbody>
           {Object.keys(groupedData).map((date) => (
             <React.Fragment key={date}>
-              <br />
               <tr>
-                <td colSpan={hours.length + 1} style={{ ...styles.dateRow }}>
-                  {date}
-                </td>
+                <td style={{ ...styles.dateRow }}>{date}</td>
+                {hours.map((time) => (
+                  <td key={time} style={{ ...styles.trTd, ...(styles.trTime as any) }}>
+                    {time}時
+                  </td>
+                ))}
               </tr>
               <tr style={styles.tr}>
                 <td style={{ ...styles.thTdTitle, ...styles.dataTmpTb }}>気温 (°C)</td>
                 {groupedData[date].temperature_2m.map((temp, index) => (
-                  <td key={index} style={{ ...styles.thTd, ...styles.dataTmpTb }}>
+                  <td key={index} style={{ ...styles.trTd, ...styles.dataTmpTb }}>
                     {temp}
                   </td>
                 ))}
@@ -143,11 +135,12 @@ const Home = ({ weather }: any) => {
               <tr style={styles.tr}>
                 <td style={{ ...styles.thTdTitle, ...styles.dataRainTb }}>降雨率 (%)</td>
                 {groupedData[date].precipitation_probability.map((prob, index) => (
-                  <td key={index} style={{ ...styles.thTd, ...styles.dataRainTb }}>
+                  <td key={index} style={{ ...styles.trTd, ...styles.dataRainTb }}>
                     {prob}
                   </td>
                 ))}
               </tr>
+              <br />
             </React.Fragment>
           ))}
         </tbody>
