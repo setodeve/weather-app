@@ -50,7 +50,7 @@ const Home = () => {
           router.push(`/weather/${encodedLat}/${encodedLng}`, undefined, { shallow: true })
         }, 0)
       } catch (error) {
-        console.error('位置情報の取得に失敗しました。', error)
+        alert('位置情報の取得に失敗しました。アクセスを許可してください。')
         setLoading(false)
       }
     },
