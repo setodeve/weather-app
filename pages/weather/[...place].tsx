@@ -3,8 +3,8 @@ import { createHourlyData } from '@/lib/utils_db'
 import { VStack, Heading, Button } from '@yamada-ui/react'
 import { toZonedTime } from 'date-fns-tz'
 import { useRouter } from 'next/router'
-
-const styles = {
+import type { CSSProperties } from 'react'
+const styles: { [key: string]: CSSProperties } = {
   container: {
     width: '90%',
     margin: '20px auto',
@@ -21,31 +21,35 @@ const styles = {
     overflowX: 'auto' as 'auto',
   },
   thTd: { fontSize: '13px' },
+  thTitle: {
+    fontSize: '13px',
+    textAlign: 'center',
+    paddingTop: '3px',
+    backgroundColor: '#1453d0',
+    color: 'white',
+    fontWeight: 'bold',
+  },
   thTdTitle: {
     paddingTop: '2px',
     fontSize: '13px',
+    fontWeight: '600',
   },
   th: {
-    backgroundColor: '#6592f1',
+    backgroundColor: '#1453d0',
     color: 'white',
     position: 'sticky',
     padding: '5px',
     textAlign: 'center',
   },
-  tr: {
-    borderBottom: '0.2rem solid white',
-  },
+
   dataTmpTb: {
-    borderBottom: '0.1rem solid #ddd',
-    borderRight: '0.1rem  solid #ddd',
-    borderLeft: '0.1rem solid #ddd',
+    border: '0.1rem solid #ddd',
   },
   dataRainTb: {
-    borderRight: '0.1rem  solid #ddd',
-    borderLeft: '0.1rem solid #ddd',
+    border: '0.1rem solid #ddd',
   },
   dateRow: {
-    backgroundColor: '#6592f1',
+    backgroundColor: '#1453d0',
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'left',
@@ -107,18 +111,14 @@ const Home = ({ weather }: any) => {
 
   return (
     <VStack style={styles.container}>
-      <Button colorScheme='blue' onClick={goHome} width='40%' style={styles.center}>
-        ホームに戻る
-      </Button>
-
       <Heading size='md'>1週間分の天気</Heading>
       <table style={styles.table as any}>
         <thead>
           <tr style={styles.tr}>
-            <th style={{ ...styles.thTd }}></th>
+            <th style={{ ...styles.thTitle }}>Day \ Time</th>
             {hours.map((time) => (
               <th key={time} style={{ ...styles.thTd, ...(styles.th as any) }}>
-                {time}
+                {time}時
               </th>
             ))}
           </tr>
@@ -126,12 +126,13 @@ const Home = ({ weather }: any) => {
         <tbody>
           {Object.keys(groupedData).map((date) => (
             <React.Fragment key={date}>
+              <br />
               <tr>
-                <td colSpan={hours.length + 1} style={styles.dateRow as any}>
+                <td colSpan={hours.length + 1} style={{ ...styles.dateRow }}>
                   {date}
                 </td>
               </tr>
-              <tr>
+              <tr style={styles.tr}>
                 <td style={{ ...styles.thTdTitle, ...styles.dataTmpTb }}>気温 (°C)</td>
                 {groupedData[date].temperature_2m.map((temp, index) => (
                   <td key={index} style={{ ...styles.thTd, ...styles.dataTmpTb }}>
@@ -139,7 +140,7 @@ const Home = ({ weather }: any) => {
                   </td>
                 ))}
               </tr>
-              <tr>
+              <tr style={styles.tr}>
                 <td style={{ ...styles.thTdTitle, ...styles.dataRainTb }}>降雨率 (%)</td>
                 {groupedData[date].precipitation_probability.map((prob, index) => (
                   <td key={index} style={{ ...styles.thTd, ...styles.dataRainTb }}>
@@ -154,6 +155,15 @@ const Home = ({ weather }: any) => {
       <iframe
         src={`https://maps.google.co.jp/maps?output=embed&q=${weather.latitude},${weather.longitude}&z=13`}
       ></iframe>
+      <Button
+        variant='outline'
+        colorScheme='blue'
+        onClick={goHome}
+        width='40%'
+        style={styles.center}
+      >
+        ホームに戻る
+      </Button>
     </VStack>
   )
 }
