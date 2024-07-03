@@ -9,7 +9,8 @@
 |<img src="./public/weather.png" alt="Weather Screen"/>|
 
 ## デプロイ先
-https://weather-app-nine-kappa-50.vercel.app/
+現在非公開
+~~https://weather-app-nine-kappa-50.vercel.app/~~
 
 ## 仕様
 - 地域を選択すると、天気がわかるサービス
