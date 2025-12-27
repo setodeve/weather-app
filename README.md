@@ -8,10 +8,6 @@
 |:-:|
 |<img src="./public/weather.png" alt="Weather Screen"/>|
 
-## デプロイ先
-現在非公開
-~~https://weather-app-nine-kappa-50.vercel.app/~~
-
 ## 仕様
 - 地域を選択すると、天気がわかるサービス
 - 取得した天気情報はDBに格納して、同じ日の同一地域の天気情報はDBから取得
